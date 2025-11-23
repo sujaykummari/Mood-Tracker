@@ -4,6 +4,7 @@ import { SignIn } from './components/SignIn';
 import { Dashboard } from './components/Dashboard';
 import { Journal } from './components/Journal';
 import { Breathing } from './components/Breathing';
+import { NavBar } from './components/NavBar';
 import { AnimatePresence } from 'framer-motion';
 
 /**
@@ -37,27 +38,31 @@ function AppContent() {
 
     // Render the current view with exit/enter animations.
     return (
-        <AnimatePresence mode="wait">
-            {currentView === 'dashboard' && (
-                <Dashboard
-                    key="dashboard"
-                    onNavigate={handleNavigate}
-                />
-            )}
-            {currentView === 'journal' && (
-                <Journal
-                    key="journal"
-                    onBack={() => setCurrentView('dashboard')}
-                />
-            )}
-            {currentView === 'breathing' && (
-                <Breathing
-                    key="breathing"
-                    onBack={() => setCurrentView('dashboard')}
-                    initialTechnique={viewParams.initialTechnique}
-                />
-            )}
-        </AnimatePresence>
+        <div className="pb-24"> {/* Padding for bottom nav */}
+            <AnimatePresence mode="wait">
+                {currentView === 'dashboard' && (
+                    <Dashboard
+                        key="dashboard"
+                        onNavigate={handleNavigate}
+                    />
+                )}
+                {currentView === 'journal' && (
+                    <Journal
+                        key="journal"
+                        onBack={() => setCurrentView('dashboard')}
+                    />
+                )}
+                {currentView === 'breathing' && (
+                    <Breathing
+                        key="breathing"
+                        onBack={() => setCurrentView('dashboard')}
+                        initialTechnique={viewParams.initialTechnique}
+                    />
+                )}
+            </AnimatePresence>
+
+            <NavBar currentView={currentView} onNavigate={handleNavigate} />
+        </div>
     );
 }
 

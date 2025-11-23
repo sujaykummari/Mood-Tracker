@@ -89,6 +89,8 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
 
     // Initialize Audio Context
     useEffect(() => {
+        // We create the context but don't start it yet.
+        // Browsers require a user gesture to resume/start the context.
         if (!audioCtxRef.current) {
             audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
         }
@@ -99,14 +101,22 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
         };
     }, []);
 
+    // Ensure Audio Context is Running on User Interaction
+    const ensureAudioContext = async () => {
+        if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
+            await audioCtxRef.current.resume();
+        }
+    };
+
     // Start/Stop Audio
-    const toggleAudio = (start: boolean) => {
+    const toggleAudio = async (start: boolean) => {
         if (isMuted || !audioCtxRef.current) return;
 
         if (start) {
-            if (audioCtxRef.current.state === 'suspended') {
-                audioCtxRef.current.resume();
-            }
+            await ensureAudioContext(); // Critical fix: Resume context
+
+            // If already playing, don't restart
+            if (oscillatorRef.current) return;
 
             const osc = audioCtxRef.current.createOscillator();
             const gain = audioCtxRef.current.createGain();
@@ -115,7 +125,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
             osc.frequency.setValueAtTime(220, audioCtxRef.current.currentTime); // A3 base
 
             gain.gain.setValueAtTime(0, audioCtxRef.current.currentTime);
-            gain.gain.linearRampToValueAtTime(0.1, audioCtxRef.current.currentTime + 1);
+            gain.gain.linearRampToValueAtTime(0.15, audioCtxRef.current.currentTime + 1); // Slightly louder
 
             osc.connect(gain);
             gain.connect(audioCtxRef.current.destination);
@@ -125,11 +135,20 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
             gainNodeRef.current = gain;
         } else {
             if (gainNodeRef.current && audioCtxRef.current) {
+                // Smooth fade out
+                gainNodeRef.current.gain.cancelScheduledValues(audioCtxRef.current.currentTime);
+                gainNodeRef.current.gain.setValueAtTime(gainNodeRef.current.gain.value, audioCtxRef.current.currentTime);
                 gainNodeRef.current.gain.linearRampToValueAtTime(0, audioCtxRef.current.currentTime + 0.5);
+
                 setTimeout(() => {
                     if (oscillatorRef.current) {
                         oscillatorRef.current.stop();
                         oscillatorRef.current.disconnect();
+                        oscillatorRef.current = null;
+                    }
+                    if (gainNodeRef.current) {
+                        gainNodeRef.current.disconnect();
+                        gainNodeRef.current = null;
                     }
                 }, 500);
             }
@@ -138,10 +157,14 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
 
     // Modulate Audio based on Phase
     useEffect(() => {
-        if (!isActive || isMuted || !oscillatorRef.current || !audioCtxRef.current) return;
+        if (!isActive || isMuted || !oscillatorRef.current || !audioCtxRef.current || !gainNodeRef.current) return;
 
         const now = audioCtxRef.current.currentTime;
         const osc = oscillatorRef.current;
+
+        // Smooth frequency transitions
+        osc.frequency.cancelScheduledValues(now);
+        osc.frequency.setValueAtTime(osc.frequency.value, now);
 
         if (phase === 'Inhale') {
             osc.frequency.linearRampToValueAtTime(330, now + technique.pattern[0] / 1000); // Rise to E4
@@ -151,14 +174,25 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
         // Hold maintains current frequency
     }, [phase, isActive, isMuted, technique]);
 
+    // Handle Play/Pause Click
+    const handleTogglePlay = async () => {
+        const nextState = !isActive;
+        setIsActive(nextState);
+
+        if (nextState) {
+            await ensureAudioContext(); // Ensure context is ready
+            toggleAudio(true);
+        } else {
+            toggleAudio(false);
+        }
+    };
+
     // Handle Mute Toggle
     const handleMuteToggle = () => {
         setIsMuted(!isMuted);
         if (!isMuted) {
-            // Muting: stop audio immediately
             toggleAudio(false);
         } else if (isActive) {
-            // Unmuting while active: start audio
             toggleAudio(true);
         }
     };
@@ -170,8 +204,6 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
             toggleAudio(false);
             return;
         }
-
-        toggleAudio(true);
 
         let mounted = true;
         const { pattern } = technique;
@@ -321,7 +353,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                         </div>
 
                         <button
-                            onClick={() => setIsActive(!isActive)}
+                            onClick={handleTogglePlay}
                             className="gravity-button px-12 py-5 rounded-2xl flex items-center gap-3 text-sm font-bold uppercase tracking-widest group"
                         >
                             {isActive ? <Pause size={18} /> : <Play size={18} className="ml-1" />}
