@@ -1,4 +1,3 @@
-```
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Plus, Trash2, Save, Search, Calendar, Edit3, Palette, Check } from 'lucide-react';
@@ -130,51 +129,51 @@ export function Journal({ onBack }: JournalProps) {
   };
 
   // Filter entries for search
-  const filteredEntries = entries.filter(e => 
-    e.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filteredEntries = entries.filter(e =>
+    e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     e.content.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Get current active glow for background
-  const activeGlow = currentEntry 
-    ? NOTE_COLORS.find(c => c.class === currentEntry.color)?.glow 
+  const activeGlow = currentEntry
+    ? NOTE_COLORS.find(c => c.class === currentEntry.color)?.glow
     : null;
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="min-h-screen w-full flex flex-col relative overflow-hidden transition-colors duration-1000"
     >
       {/* Dynamic Background Glow */}
-      <div 
-        className={`absolute inset - 0 bg - gradient - to - br transition - colors duration - 1000 - z - 10 ${ activeGlow || 'from-slate-900 to-black' } `} 
+      <div
+        className={`absolute inset-0 bg-gradient-to-br transition-colors duration-1000 -z-10 ${activeGlow || 'from-slate-900 to-black'}`}
         style={{ opacity: view === 'edit' ? 0.4 : 0 }}
       />
 
       {/* Header */}
       <header className="px-6 py-6 flex items-center justify-between z-20 bg-gradient-to-b from-black/80 to-transparent sticky top-0 backdrop-blur-sm">
-        <button 
-          onClick={view === 'edit' ? () => setView('list') : onBack} 
+        <button
+          onClick={view === 'edit' ? () => setView('list') : onBack}
           className="p-3 gravity-button rounded-full text-slate-300 hover:text-white"
         >
           <ArrowLeft size={24} />
         </button>
-        
+
         <h2 className="text-lg font-bold uppercase tracking-widest text-starlight">
           {view === 'list' ? 'Journal' : 'Edit Note'}
         </h2>
 
         {view === 'list' ? (
-          <button 
+          <button
             onClick={handleNewEntry}
             className="p-3 rounded-full bg-aurora-500/20 text-aurora-400 hover:bg-aurora-500 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(45,212,191,0.3)]"
           >
             <Plus size={24} />
           </button>
         ) : (
-          <button 
+          <button
             onClick={handleSaveEntry}
             className="px-6 py-3 rounded-full bg-nebula-500/20 text-nebula-400 hover:bg-nebula-500 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(99,102,241,0.3)] flex items-center gap-2 font-bold uppercase tracking-wider text-xs"
           >
@@ -186,7 +185,7 @@ export function Journal({ onBack }: JournalProps) {
 
       <AnimatePresence mode="wait">
         {view === 'list' ? (
-          <motion.div 
+          <motion.div
             key="list"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -196,7 +195,7 @@ export function Journal({ onBack }: JournalProps) {
             {/* Search Bar */}
             <div className="relative mb-6">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-              <input 
+              <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -217,9 +216,9 @@ export function Journal({ onBack }: JournalProps) {
                 {filteredEntries.map((entry) => (
                   <motion.button
                     key={entry.id}
-                    layoutId={`note - ${ entry.id } `}
+                    layoutId={`note-${entry.id}`}
                     onClick={() => handleEditEntry(entry)}
-                    className={`text - left p - 5 rounded - 3xl border backdrop - blur - md transition - all duration - 300 hover: scale - [1.02] active: scale - 95 group flex flex - col h - 48 relative overflow - hidden ${ entry.color } `}
+                    className={`text-left p-5 rounded-3xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] active:scale-95 group flex flex-col h-48 relative overflow-hidden ${entry.color}`}
                   >
                     <h3 className="font-bold text-lg text-white mb-2 line-clamp-1 relative z-10">{entry.title}</h3>
                     <p className="text-slate-200 text-sm leading-relaxed line-clamp-3 mb-auto font-light relative z-10 opacity-90">
@@ -237,7 +236,7 @@ export function Journal({ onBack }: JournalProps) {
             )}
           </motion.div>
         ) : (
-          <motion.div 
+          <motion.div
             key="edit"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -255,7 +254,7 @@ export function Journal({ onBack }: JournalProps) {
                   <button
                     key={theme.id}
                     onClick={() => setCurrentEntry(prev => prev ? { ...prev, color: theme.class } : null)}
-                    className={`w - 10 h - 10 rounded - full border - 2 transition - all duration - 300 flex - shrink - 0 flex items - center justify - center ${ theme.class.split(' ')[0] } ${ currentEntry?.color === theme.class ? 'border-white scale-110 shadow-[0_0_15px_rgba(255,255,255,0.8)]' : 'border-transparent opacity-60 hover:opacity-100' } `}
+                    className={`w-10 h-10 rounded-full border-2 transition-all duration-300 flex-shrink-0 flex items-center justify-center ${theme.class.split(' ')[0]} ${currentEntry?.color === theme.class ? 'border-white scale-110 shadow-[0_0_15px_rgba(255,255,255,0.8)]' : 'border-transparent opacity-60 hover:opacity-100'}`}
                     title={theme.label}
                   >
                     {currentEntry?.color === theme.class && <Check size={16} className="text-white drop-shadow-md" />}
@@ -264,7 +263,7 @@ export function Journal({ onBack }: JournalProps) {
               </div>
             </div>
 
-            <div className={`flex - 1 rounded - 3xl p - 6 border backdrop - blur - xl flex flex - col transition - all duration - 500 relative z - 10 ${ currentEntry?.color || NOTE_COLORS[0].class } `}>
+            <div className={`flex-1 rounded-3xl p-6 border backdrop-blur-xl flex flex-col transition-all duration-500 relative z-10 ${currentEntry?.color || NOTE_COLORS[0].class}`}>
               <input
                 type="text"
                 value={currentEntry?.title || ''}
@@ -272,7 +271,7 @@ export function Journal({ onBack }: JournalProps) {
                 placeholder="Title"
                 className="bg-transparent border-none text-3xl font-bold text-white placeholder:text-white/30 focus:outline-none mb-4 w-full drop-shadow-md"
               />
-              
+
               <div className="flex items-center gap-2 mb-6 text-white/60 text-xs font-mono uppercase tracking-widest">
                 <Calendar size={12} />
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
@@ -288,7 +287,7 @@ export function Journal({ onBack }: JournalProps) {
 
             {/* Delete Button */}
             <div className="mt-6 flex justify-center">
-              <button 
+              <button
                 onClick={handleDeleteEntry}
                 className="flex items-center gap-2 text-red-400 hover:text-red-300 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full hover:bg-red-500/10 transition-colors"
               >
@@ -302,4 +301,3 @@ export function Journal({ onBack }: JournalProps) {
     </motion.div>
   );
 }
-```
