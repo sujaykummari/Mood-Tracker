@@ -18,7 +18,7 @@ export function MoonPhase() {
     // Improved logic: Use a pre-defined set of masks for the 8 phases
     const renderShadow = () => {
         const p = phase.toLowerCase();
-        const r = 49; // Radius slightly larger to cover edges
+        const r = 50; // Radius to cover full container
         const c = 50; // Center
 
         // We draw the SHADOW (Black overlay)
@@ -73,13 +73,13 @@ export function MoonPhase() {
             className="position-relative w-100 d-flex flex-column align-items-center justify-content-center py-5"
         >
             {/* Moon Container */}
-            <div className="position-relative rounded-circle overflow-hidden" style={{ width: '15rem', height: '15rem', boxShadow: '0 0 80px rgba(255,255,255,0.15)' }}>
+            <div className="position-relative rounded-circle overflow-hidden" style={{ width: '20rem', height: '20rem', boxShadow: '0 0 80px rgba(255,255,255,0.15)' }}>
                 {/* Realistic Moon Image */}
                 <img
                     src="/moon.png"
                     alt="Moon"
                     className="w-100 h-100 object-fit-cover"
-                    style={{ transform: 'scale(1.01)' }}
+                    style={{ transform: 'scale(1.1)' }}
                 />
 
                 {/* SVG Shadow Overlay */}
