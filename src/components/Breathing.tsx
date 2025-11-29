@@ -380,8 +380,8 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                                         key={timer}
                                         initial={{ opacity: 0, scale: 0.5 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        className="display-4 fw-bold text-white mt-2"
-                                        style={{ textShadow: '0 0 20px rgba(167, 139, 250, 0.5)' }}
+                                        className="display-4 fw-bold text-primary mt-2"
+                                        style={{ textShadow: '0 0 20px rgba(165, 138, 239, 0.3)' }}
                                     >
                                         {timer}
                                     </motion.span>

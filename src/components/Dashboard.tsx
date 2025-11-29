@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Settings } from './Settings';
 import { MoodFeedback } from './MoodFeedback';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogOut, Settings as SettingsIcon, BookOpen, Wind } from 'lucide-react';
@@ -13,13 +12,12 @@ import plantCalm from '../assets/plant_calm_1764418294562.png';
 import plantHappy from '../assets/plant_happy_1764418309016.png';
 
 interface DashboardProps {
-    onNavigate: (view: 'journal' | 'breathing' | 'panic', params?: any) => void;
+    onNavigate: (view: 'journal' | 'breathing' | 'panic' | 'settings', params?: any) => void;
 }
 
 export function Dashboard({ onNavigate }: DashboardProps) {
     const { user, signOut } = useAuth();
     const [selectedMood, setSelectedMood] = useState<string | null>(null);
-    const [showSettings, setShowSettings] = useState(false);
     const [showMoodFeedback, setShowMoodFeedback] = useState(false);
 
     // Load saved mood
@@ -80,7 +78,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                 </div>
                 <div className="d-flex gap-2">
                     <button
-                        onClick={() => setShowSettings(true)}
+                        onClick={() => onNavigate('settings')}
                         className="btn btn-link text-secondary p-2 rounded-circle hover-bg-light-10 transition-colors"
                     >
                         <SettingsIcon size={20} />
@@ -197,7 +195,6 @@ export function Dashboard({ onNavigate }: DashboardProps) {
             </main>
 
             <AnimatePresence>
-                {showSettings && <Settings onBack={() => setShowSettings(false)} />}
                 {showMoodFeedback && selectedMood && (
                     <MoodFeedback
                         mood={selectedMood}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { SignIn } from './components/SignIn';
+import { Settings } from './components/Settings';
 import { Dashboard } from './components/Dashboard';
 import { Journal } from './components/Journal';
 import { Breathing } from './components/Breathing';
@@ -11,7 +12,7 @@ import { AnimatePresence } from 'framer-motion';
 /**
  * Type definition for the available views in the application sujay.
  */
-type View = 'dashboard' | 'journal' | 'breathing' | 'panic';
+type View = 'dashboard' | 'journal' | 'breathing' | 'panic' | 'settings';
 
 /**
  * Main application content component.
@@ -63,6 +64,11 @@ function AppContent() {
                 {currentView === 'panic' && (
                     <PanicButton
                         key="panic"
+                        onBack={() => setCurrentView('dashboard')}
+                    />
+                )}
+                {currentView === 'settings' && (
+                    <Settings
                         onBack={() => setCurrentView('dashboard')}
                     />
                 )}
