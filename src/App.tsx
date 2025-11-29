@@ -8,7 +8,7 @@ import { NavBar } from './components/NavBar';
 import { AnimatePresence } from 'framer-motion';
 
 /**
- * Type definition for the available views in the application.
+ * Type definition for the available views in the application sujay.
  */
 type View = 'dashboard' | 'journal' | 'breathing';
 
