@@ -276,7 +276,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                             setShowLibrary(!showLibrary);
                             setIsActive(false);
                         }}
-                        className="btn btn-outline-light rounded-pill px-3 py-2 small font-monospace text-uppercase tracking-widest d-flex align-items-center gap-2 gravity-button border-0"
+                        className="btn gravity-button rounded-pill px-3 py-2 small font-monospace text-uppercase tracking-widest d-flex align-items-center gap-2 border-0"
                     >
                         <Wind size={14} />
                         {showLibrary ? 'Close' : 'Exercises'}
@@ -294,7 +294,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                         className="w-100 pb-5 overflow-auto"
                         style={{ maxHeight: '80vh' }}
                     >
-                        <h2 className="h5 fw-bold mb-4 text-light text-uppercase tracking-widest border-bottom border-white border-opacity-10 pb-3">Exercises</h2>
+                        <h2 className="h5 fw-bold mb-4 text-primary text-uppercase tracking-widest border-bottom border-primary border-opacity-10 pb-3">Exercises</h2>
                         <div className="d-flex flex-column gap-3">
                             {Object.values(TECHNIQUES).map((t) => (
                                 <button
@@ -306,7 +306,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                                     className={`btn w-100 p-4 rounded-4 text-start transition-all border-start border-4 gravity-panel ${technique.id === t.id ? 'border-info bg-light bg-opacity-10' : 'border-transparent'}`}
                                 >
                                     <div className="d-flex justify-content-between align-items-start mb-2">
-                                        <h3 className={`h6 fw-bold mb-0 transition-colors ${technique.id === t.id ? 'text-info' : 'text-light'}`}>{t.name}</h3>
+                                        <h3 className={`h6 fw-bold mb-0 transition-colors ${technique.id === t.id ? 'text-info' : 'text-primary'}`}>{t.name}</h3>
                                         {technique.id === t.id && <div className="rounded-circle bg-info shadow-sm" style={{ width: '8px', height: '8px' }} />}
                                     </div>
                                     <p className="small text-secondary font-monospace mb-0 lh-base">{t.description}</p>
@@ -323,7 +323,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                         className="flex-1 d-flex flex-column align-items-center justify-content-center w-100"
                     >
                         <div className="text-center mb-5 position-relative z-1">
-                            <h2 className="h3 fw-bold mb-2 text-light text-uppercase tracking-widest">{technique.name}</h2>
+                            <h2 className="h3 fw-bold mb-2 text-primary text-uppercase tracking-widest">{technique.name}</h2>
                             <p className="text-secondary font-monospace small mx-auto" style={{ maxWidth: '250px' }}>{technique.description}</p>
                         </div>
 
@@ -358,14 +358,14 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                                     duration: isActive ? (phase === 'Inhale' ? technique.pattern[0] : technique.pattern[2]) / 1000 : 0.5,
                                     ease: "easeInOut"
                                 }}
-                                className="rounded-circle border border-2 border-white border-opacity-10 d-flex align-items-center justify-content-center gravity-panel position-relative z-1 shadow-lg backdrop-blur-xl"
+                                className="rounded-circle border border-2 border-primary border-opacity-10 d-flex align-items-center justify-content-center gravity-panel position-relative z-1 shadow-lg backdrop-blur-xl"
                                 style={{ width: '192px', height: '192px' }}
                             >
                                 <motion.span
                                     key={phase}
                                     initial={{ opacity: 0, y: 5 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="h3 fw-light text-uppercase text-light mb-0"
+                                    className="h3 fw-light text-uppercase text-primary mb-0"
                                     style={{ letterSpacing: '0.3em' }}
                                 >
                                     {phase}
@@ -375,7 +375,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
 
                         <button
                             onClick={handleTogglePlay}
-                            className="btn gravity-button px-5 py-3 rounded-4 d-flex align-items-center gap-3 small fw-bold text-uppercase tracking-widest text-light"
+                            className="btn gravity-button px-5 py-3 rounded-4 d-flex align-items-center gap-3 small fw-bold text-uppercase tracking-widest text-primary"
                         >
                             {isActive ? <Pause size={18} /> : <Play size={18} className="ms-1" />}
                             {isActive ? 'Pause' : 'Start'}

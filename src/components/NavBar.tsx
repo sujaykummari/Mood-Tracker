@@ -1,5 +1,5 @@
 
-import { Home, BookOpen, Wind } from 'lucide-react';
+import { Home, BookOpen, Wind, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NavBarProps {
@@ -10,6 +10,7 @@ interface NavBarProps {
 export function NavBar({ currentView, onNavigate }: NavBarProps) {
     const navItems = [
         { id: 'dashboard', icon: Home, label: 'Home' },
+        { id: 'panic', icon: AlertCircle, label: 'Panic' },
         { id: 'journal', icon: BookOpen, label: 'Journal' },
         { id: 'breathing', icon: Wind, label: 'Breathe' },
         // Settings is usually top-right or a separate tab, but for bottom nav it fits well as a 4th item or we keep it in header.
@@ -29,14 +30,14 @@ export function NavBar({ currentView, onNavigate }: NavBarProps) {
                             onClick={() => onNavigate(item.id)}
                             className={`btn btn-link text-decoration-none p-0 position-relative d-flex flex-column align-items-center gap-1 transition-colors duration-300 ${isActive ? 'text-info' : 'text-secondary'
                                 }`}
-                            style={{ color: isActive ? '#2dd4bf' : undefined }} // Custom color for active state to match aurora
+                            style={{ color: isActive ? 'var(--primary)' : undefined }} // Custom color for active state to match lavender theme
                         >
                             <item.icon size={24} strokeWidth={isActive ? 2.5 : 2} />
                             {isActive && (
                                 <motion.div
                                     layoutId="navIndicator"
                                     className="position-absolute bottom-0 translate-middle-x start-50"
-                                    style={{ width: '4px', height: '4px', backgroundColor: '#2dd4bf', borderRadius: '50%', marginBottom: '-8px', boxShadow: '0 0 8px #2dd4bf' }}
+                                    style={{ width: '4px', height: '4px', backgroundColor: 'var(--primary)', borderRadius: '50%', marginBottom: '-8px', boxShadow: '0 0 8px var(--primary)' }}
                                 />
                             )}
                         </button>

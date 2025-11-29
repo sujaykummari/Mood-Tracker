@@ -4,13 +4,14 @@ import { SignIn } from './components/SignIn';
 import { Dashboard } from './components/Dashboard';
 import { Journal } from './components/Journal';
 import { Breathing } from './components/Breathing';
+import { PanicButton } from './components/PanicButton';
 import { NavBar } from './components/NavBar';
 import { AnimatePresence } from 'framer-motion';
 
 /**
  * Type definition for the available views in the application.
  */
-type View = 'dashboard' | 'journal' | 'breathing';
+type View = 'dashboard' | 'journal' | 'breathing' | 'panic';
 
 /**
  * Main application content component.
@@ -57,6 +58,12 @@ function AppContent() {
                         key="breathing"
                         onBack={() => setCurrentView('dashboard')}
                         initialTechnique={viewParams.initialTechnique}
+                    />
+                )}
+                {currentView === 'panic' && (
+                    <PanicButton
+                        key="panic"
+                        onBack={() => setCurrentView('dashboard')}
                     />
                 )}
             </AnimatePresence>
