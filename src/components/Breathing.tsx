@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Play, Pause, Wind, Volume2, VolumeX } from 'lucide-react';
+
 interface BreathingProps {
     onBack: () => void;
     initialTechnique?: string;
@@ -77,6 +78,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
     );
     const [showLibrary, setShowLibrary] = useState(!initialTechnique);
     const [isMuted, setIsMuted] = useState(false);
+    const [timer, setTimer] = useState(0); // Countdown timer state
 
     // Audio Context Refs
     const audioCtxRef = useRef<AudioContext | null>(null);
@@ -85,8 +87,6 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
 
     // Initialize Audio Context
     useEffect(() => {
-        // We create the context but don't start it yet.
-        // Browsers require a user gesture to resume/start the context.
         if (!audioCtxRef.current) {
             audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
         }
@@ -109,9 +109,8 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
         if (isMuted || !audioCtxRef.current) return;
 
         if (start) {
-            await ensureAudioContext(); // Critical fix: Resume context
+            await ensureAudioContext();
 
-            // If already playing, don't restart
             if (oscillatorRef.current) return;
 
             const osc = audioCtxRef.current.createOscillator();
@@ -121,7 +120,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
             osc.frequency.setValueAtTime(220, audioCtxRef.current.currentTime); // A3 base
 
             gain.gain.setValueAtTime(0, audioCtxRef.current.currentTime);
-            gain.gain.linearRampToValueAtTime(0.15, audioCtxRef.current.currentTime + 1); // Slightly louder
+            gain.gain.linearRampToValueAtTime(0.15, audioCtxRef.current.currentTime + 1);
 
             osc.connect(gain);
             gain.connect(audioCtxRef.current.destination);
@@ -131,7 +130,6 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
             gainNodeRef.current = gain;
         } else {
             if (gainNodeRef.current && audioCtxRef.current) {
-                // Smooth fade out
                 gainNodeRef.current.gain.cancelScheduledValues(audioCtxRef.current.currentTime);
                 gainNodeRef.current.gain.setValueAtTime(gainNodeRef.current.gain.value, audioCtxRef.current.currentTime);
                 gainNodeRef.current.gain.linearRampToValueAtTime(0, audioCtxRef.current.currentTime + 0.5);
@@ -158,7 +156,6 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
         const now = audioCtxRef.current.currentTime;
         const osc = oscillatorRef.current;
 
-        // Smooth frequency transitions
         osc.frequency.cancelScheduledValues(now);
         osc.frequency.setValueAtTime(osc.frequency.value, now);
 
@@ -167,7 +164,6 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
         } else if (phase === 'Exhale') {
             osc.frequency.linearRampToValueAtTime(220, now + technique.pattern[2] / 1000); // Fall to A3
         }
-        // Hold maintains current frequency
     }, [phase, isActive, isMuted, technique]);
 
     // Handle Play/Pause Click
@@ -176,7 +172,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
         setIsActive(nextState);
 
         if (nextState) {
-            await ensureAudioContext(); // Ensure context is ready
+            await ensureAudioContext();
             toggleAudio(true);
         } else {
             toggleAudio(false);
@@ -193,10 +189,11 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
         }
     };
 
-    // Breathing cycle logic
+    // Breathing cycle logic with countdown
     useEffect(() => {
         if (!isActive) {
             setPhase('Ready');
+            setTimer(0);
             toggleAudio(false);
             return;
         }
@@ -204,25 +201,33 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
         let mounted = true;
         const { pattern } = technique;
 
+        const runPhase = async (phaseName: string, duration: number) => {
+            if (!mounted || !isActive) return;
+            setPhase(phaseName);
+
+            const seconds = Math.ceil(duration / 1000);
+            for (let i = 1; i <= seconds; i++) {
+                if (!mounted || !isActive) return;
+                setTimer(i);
+                await new Promise(r => setTimeout(r, 1000));
+            }
+        };
+
         const cycle = async () => {
             if (!mounted || !isActive) return;
 
-            setPhase('Inhale');
-            await new Promise(r => setTimeout(r, pattern[0]));
+            await runPhase('Inhale', pattern[0]);
 
             if (mounted && isActive && pattern[1] > 0) {
-                setPhase('Hold');
-                await new Promise(r => setTimeout(r, pattern[1]));
+                await runPhase('Hold', pattern[1]);
             }
 
             if (mounted && isActive) {
-                setPhase('Exhale');
-                await new Promise(r => setTimeout(r, pattern[2]));
+                await runPhase('Exhale', pattern[2]);
             }
 
             if (mounted && isActive && pattern[3] > 0) {
-                setPhase('Hold');
-                await new Promise(r => setTimeout(r, pattern[3]));
+                await runPhase('Hold', pattern[3]);
             }
 
             if (mounted && isActive) cycle();
@@ -238,12 +243,12 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
     // Map technique IDs to gradient styles
     const getTechniqueStyle = (techId: string) => {
         const gradients: Record<string, string> = {
-            relax: 'linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(168, 85, 247, 0.5))',
-            focus: 'linear-gradient(135deg, rgba(45, 212, 191, 0.5), rgba(16, 185, 129, 0.5))',
-            balance: 'linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(6, 182, 212, 0.5))',
-            calm: 'linear-gradient(135deg, rgba(244, 63, 94, 0.5), rgba(236, 72, 153, 0.5))',
-            energy: 'linear-gradient(135deg, rgba(249, 115, 22, 0.5), rgba(245, 158, 11, 0.5))',
-            anxiety: 'linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(217, 70, 239, 0.5))',
+            relax: 'linear-gradient(135deg, rgba(167, 139, 250, 0.5), rgba(129, 140, 248, 0.5))', // Lavender/Periwinkle
+            focus: 'linear-gradient(135deg, rgba(52, 211, 153, 0.5), rgba(16, 185, 129, 0.5))', // Sage/Emerald
+            balance: 'linear-gradient(135deg, rgba(129, 140, 248, 0.5), rgba(56, 189, 248, 0.5))', // Periwinkle/Sky
+            calm: 'linear-gradient(135deg, rgba(244, 114, 182, 0.5), rgba(251, 113, 133, 0.5))', // Pink/Rose
+            energy: 'linear-gradient(135deg, rgba(251, 191, 36, 0.5), rgba(245, 158, 11, 0.5))', // Gold/Amber
+            anxiety: 'linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(167, 139, 250, 0.5))', // Violet/Lavender
         };
         return gradients[techId] || gradients.relax;
     };
@@ -303,7 +308,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                                         setTechnique(t);
                                         setShowLibrary(false);
                                     }}
-                                    className={`btn w-100 p-4 rounded-4 text-start transition-all border-start border-4 gravity-panel ${technique.id === t.id ? 'border-info bg-light bg-opacity-10' : 'border-transparent'}`}
+                                    className={`btn w-100 p-4 rounded-4 text-start transition-all border-start border-4 gravity-panel ${technique.id === t.id ? 'border-primary bg-light bg-opacity-10' : 'border-transparent'}`}
                                 >
                                     <div className="d-flex justify-content-between align-items-start mb-2">
                                         <h3 className={`h6 fw-bold mb-0 transition-colors ${technique.id === t.id ? 'text-info' : 'text-primary'}`}>{t.name}</h3>
@@ -370,6 +375,17 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                                 >
                                     {phase}
                                 </motion.span>
+                                {isActive && (
+                                    <motion.span
+                                        key={timer}
+                                        initial={{ opacity: 0, scale: 0.5 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="display-4 fw-bold text-white mt-2"
+                                        style={{ textShadow: '0 0 20px rgba(167, 139, 250, 0.5)' }}
+                                    >
+                                        {timer}
+                                    </motion.span>
+                                )}
                             </motion.div>
                         </div>
 

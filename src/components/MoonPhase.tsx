@@ -89,7 +89,7 @@ export function MoonPhase() {
                 <h3 className="h2 fw-bold text-light text-uppercase mb-2" style={{ letterSpacing: '0.2em', textShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
                     {phase}
                 </h3>
-                <p className="small font-monospace text-uppercase tracking-widest opacity-75" style={{ color: '#2dd4bf', letterSpacing: '0.1em' }}>
+                <p className="small font-monospace text-uppercase tracking-widest opacity-75" style={{ color: '#a78bfa', letterSpacing: '0.1em' }}>
                     Current Phase
                 </p>
             </div>

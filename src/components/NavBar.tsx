@@ -28,7 +28,7 @@ export function NavBar({ currentView, onNavigate }: NavBarProps) {
                         <button
                             key={item.id}
                             onClick={() => onNavigate(item.id)}
-                            className={`btn btn-link text-decoration-none p-0 position-relative d-flex flex-column align-items-center gap-1 transition-colors duration-300 ${isActive ? 'text-info' : 'text-secondary'
+                            className={`btn btn-link text-decoration-none p-0 position-relative d-flex flex-column align-items-center gap-1 transition-colors duration-300 ${isActive ? 'text-primary' : 'text-secondary'
                                 }`}
                             style={{ color: isActive ? 'var(--primary)' : undefined }} // Custom color for active state to match lavender theme
                         >

@@ -75,8 +75,8 @@ export function MoodFeedback({ mood, onClose, onStartBreathing }: MoodFeedbackPr
             <motion.div
                 initial={{ scale: 0.9, opacity: 0, y: 20 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
-                className="gravity-panel p-5 rounded-5 w-100 position-relative text-center border border-info border-opacity-25 shadow-lg"
-                style={{ maxWidth: '24rem', boxShadow: '0 0 50px rgba(45,212,191,0.1)' }}
+                className="gravity-panel p-5 rounded-5 w-100 position-relative text-center border border-primary border-opacity-25 shadow-lg"
+                style={{ maxWidth: '24rem', boxShadow: '0 0 50px rgba(167, 139, 250, 0.1)' }}
             >
                 <button
                     onClick={onClose}
@@ -87,7 +87,7 @@ export function MoodFeedback({ mood, onClose, onStartBreathing }: MoodFeedbackPr
 
                 <div className="display-1 mb-4" style={{ textShadow: '0 0 15px rgba(255,255,255,0.5)' }}>{mood}</div>
 
-                <h2 className="h4 fw-bold mb-3 text-uppercase tracking-widest" style={{ background: 'linear-gradient(to right, #2dd4bf, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <h2 className="h4 fw-bold mb-3 text-uppercase tracking-widest" style={{ background: 'linear-gradient(to right, #a78bfa, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                     {feedback.title}
                 </h2>
 
@@ -99,7 +99,7 @@ export function MoodFeedback({ mood, onClose, onStartBreathing }: MoodFeedbackPr
                     onClick={() => onStartBreathing(feedback.techniqueId)}
                     className="btn w-100 gravity-button py-3 rounded-4 fw-bold text-light d-flex align-items-center justify-content-center gap-2 text-uppercase small tracking-wider group"
                 >
-                    <Wind size={18} className="text-info transition-transform" style={{ color: '#2dd4bf' }} />
+                    <Wind size={18} className="text-primary transition-transform" style={{ color: '#a78bfa' }} />
                     <span>Start {feedback.techniqueName}</span>
                 </button>
             </motion.div>
