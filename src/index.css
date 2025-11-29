@@ -1,32 +1,40 @@
 /* Tailwind directives removed */
 
 :root {
-  font-family: 'Quicksand', 'Nunito', 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Quicksand', 'Nunito', 'Varela Round', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
   font-weight: 500;
-  /* Slightly bolder for softness */
   color-scheme: light;
 
-  /* Lavender Light Theme Variables */
-  --bg-app: #F4ECFF;
+  /* Plant Theme Variables */
+  --bg-app: #EDE5F9;
   /* Soft Lavender */
-  --text-main: #3D314A;
-  /* Dark Muted Purple */
+  --text-main: #2B2B2B;
+  /* Warm Charcoal */
   --text-muted: #5D4B6A;
-  /* Soft Charcoal */
-  --primary: #8C7BC3;
+  /* Soft Brown/Grey */
+  --primary: #A58AEF;
   /* Muted Purple */
-  --primary-hover: #7A6AB0;
-  --accent: #FFD972;
-  /* Soft Sunflower */
+  --primary-hover: #8C7BC3;
+
+  /* Accent Colors */
+  --accent-warm: #F5E6D3;
+  /* Warm Beige */
+  --accent-green: #C1E1C1;
+  /* Pastel Green */
+  --accent-yellow: #FFF5BA;
+  /* Pastel Yellow */
+  --accent-heart: #FFB7B2;
+  /* Soft Pink/Red */
+
   --surface: #FFFFFF;
-  --surface-border: rgba(140, 123, 195, 0.15);
+  --surface-border: rgba(165, 138, 239, 0.15);
 
   /* Functional Colors */
-  --success: #86EFAC;
-  /* Soft Green */
-  --error: #FDA4AF;
-  /* Soft Red */
+  --success: #C1E1C1;
+  /* Pastel Green */
+  --error: #FFB7B2;
+  /* Soft Pink */
 
   background-color: var(--bg-app);
   color: var(--text-main);
@@ -52,13 +60,13 @@ body::before {
   height: 120%;
   background:
     radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.8), transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(255, 217, 114, 0.15), transparent 40%);
+    radial-gradient(circle at 80% 70%, rgba(255, 245, 186, 0.2), transparent 40%);
   /* Subtle sun glow */
   z-index: -2;
   pointer-events: none;
 }
 
-/* --- Antigravity UI Utilities (Light Theme) --- */
+/* --- Antigravity UI Utilities (Plant Theme) --- */
 
 /* The main container for cards */
 .gravity-panel {
@@ -66,16 +74,16 @@ body::before {
   border-radius: 24px;
   border: 1px solid var(--surface-border);
   box-shadow:
-    0 4px 20px rgba(140, 123, 195, 0.08),
-    0 1px 3px rgba(140, 123, 195, 0.05);
+    0 4px 20px rgba(165, 138, 239, 0.08),
+    0 1px 3px rgba(165, 138, 239, 0.05);
   transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
 }
 
 .gravity-panel:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 12px 28px rgba(140, 123, 195, 0.12),
-    0 2px 6px rgba(140, 123, 195, 0.08);
+    0 12px 28px rgba(165, 138, 239, 0.12),
+    0 2px 6px rgba(165, 138, 239, 0.08);
 }
 
 /* Interactive buttons */
@@ -96,7 +104,7 @@ body::before {
   border-color: var(--primary);
   color: var(--primary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(140, 123, 195, 0.15);
+  box-shadow: 0 4px 12px rgba(165, 138, 239, 0.15);
 }
 
 .gravity-button:active {
@@ -112,14 +120,14 @@ body::before {
   border-radius: 9999px;
   padding: 12px 24px;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(140, 123, 195, 0.3);
+  box-shadow: 0 4px 12px rgba(165, 138, 239, 0.3);
   transition: all 0.3s ease;
 }
 
 .btn-primary-soft:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(140, 123, 195, 0.4);
+  box-shadow: 0 6px 16px rgba(165, 138, 239, 0.4);
   color: white;
 }
 
@@ -137,7 +145,7 @@ body::before {
 
 .gravity-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(140, 123, 195, 0.1);
+  box-shadow: 0 0 0 4px rgba(165, 138, 239, 0.1);
 }
 
 /* --- Theme Overrides --- */
@@ -159,6 +167,11 @@ body::before {
 .text-warning {
   color: #ECA869 !important;
   /* Warm Peach/Orange */
+}
+
+.text-success {
+  color: #65A30D !important;
+  /* Lime-600 for readability on light bg */
 }
 
 /* Backgrounds */
@@ -189,10 +202,10 @@ body::before {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(140, 123, 195, 0.3);
+  background: rgba(165, 138, 239, 0.3);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(140, 123, 195, 0.5);
+  background: rgba(165, 138, 239, 0.5);
 }

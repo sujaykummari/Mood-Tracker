@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, CheckCircle, Wind, Brain, ShieldCheck, Heart, Coffee, BookOpen } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Wind, Brain, ShieldCheck, Heart, Coffee, BookOpen, Volume2, VolumeX, ChevronRight, ChevronLeft, Globe } from 'lucide-react';
 import { Breathing } from './Breathing';
 
 interface PanicButtonProps {
@@ -8,48 +8,128 @@ interface PanicButtonProps {
 }
 
 type PanicStep = 'initial' | 'calm_statements' | 'face_statements' | 'grounding_prompt' | 'breathing' | 'complete';
+type Language = 'en' | 'hi' | 'te' | 'kn' | 'ta' | 'ml';
+
+const LANGUAGES: { id: Language; label: string; voiceCode: string }[] = [
+    { id: 'en', label: 'English', voiceCode: 'en-IN' },
+    { id: 'hi', label: 'Hindi', voiceCode: 'hi-IN' },
+    { id: 'te', label: 'Telugu', voiceCode: 'te-IN' },
+    { id: 'kn', label: 'Kannada', voiceCode: 'kn-IN' },
+    { id: 'ta', label: 'Tamil', voiceCode: 'ta-IN' },
+    { id: 'ml', label: 'Malayalam', voiceCode: 'ml-IN' },
+];
 
 export function PanicButton({ onBack }: PanicButtonProps) {
     const [step, setStep] = useState<PanicStep>('initial');
     const [statementIndex, setStatementIndex] = useState(0);
+    const [language, setLanguage] = useState<Language>('en');
+    const [isPlaying, setIsPlaying] = useState(false);
+    const synthRef = useRef<SpeechSynthesis | null>(null);
 
-    // Path 1: "Help me feel okay"
-    const calmStatements = [
-        "You are safe here.",
-        "This feeling is uncomfortable, but it will pass.",
-        "Your body is just trying to protect you.",
-        "You don't need to fix anything right now.",
-        "Just breathe. You are okay."
-    ];
-
-    // Path 2: "I'm ready to face this"
-    const faceStatements = [
-        "Your heart is beating fast because your body is preparing you.",
-        "You are strong enough to handle this feeling.",
-        "This is just adrenaline. It cannot hurt you.",
-        "Ride the wave. It will crash soon.",
-        "You have survived this before, and you will again."
-    ];
-
-    // Auto-advance statements
+    // Initialize Speech Synthesis
     useEffect(() => {
-        if (step === 'calm_statements' || step === 'face_statements') {
-            const statements = step === 'calm_statements' ? calmStatements : faceStatements;
-            if (statementIndex < statements.length) {
-                const timer = setTimeout(() => {
-                    setStatementIndex(prev => prev + 1);
-                }, 4000); // 4 seconds per statement
-                return () => clearTimeout(timer);
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+            synthRef.current = window.speechSynthesis;
+        }
+    }, []);
+
+    // Stop speech when component unmounts or step changes
+    useEffect(() => {
+        return () => {
+            if (synthRef.current) {
+                synthRef.current.cancel();
+            }
+        };
+    }, [step]);
+
+    const speakText = (text: string) => {
+        if (!synthRef.current) return;
+
+        // Cancel existing speech
+        synthRef.current.cancel();
+
+        if (isPlaying) {
+            setIsPlaying(false);
+            return;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(text);
+
+        // Try to find the correct voice
+        const voices = synthRef.current.getVoices();
+        const targetLang = LANGUAGES.find(l => l.id === language);
+        if (targetLang) {
+            const voice = voices.find(v => v.lang.includes(targetLang.voiceCode));
+            if (voice) utterance.voice = voice;
+        }
+
+        // Fallback to English if specific language voice not found, but try to use an Indian English voice if available
+        if (!utterance.voice && language !== 'en') {
+            const enVoice = voices.find(v => v.lang.includes('en-IN'));
+            if (enVoice) utterance.voice = enVoice;
+        }
+
+        utterance.rate = 0.9; // Slightly slower for calming effect
+        utterance.pitch = 1.0;
+
+        utterance.onend = () => setIsPlaying(false);
+        utterance.onerror = () => setIsPlaying(false);
+
+        setIsPlaying(true);
+        synthRef.current.speak(utterance);
+    };
+
+    // Path 1: "Help me feel safe" (Expanded)
+    const calmStatements = [
+        "You are safe here. Take a moment to just be.",
+        "This feeling is uncomfortable, but it is not dangerous.",
+        "Your body is just trying to protect you. Thank it, and let it know you are safe.",
+        "You don't need to fix anything right now. Just breathe.",
+        "Imagine a wave washing over you, cool and calming.",
+        "Ground yourself in this moment. You are here, right now.",
+        "This will pass. It always does.",
+        "You are stronger than this feeling.",
+        "Soft belly, soft jaw. Let the tension melt away.",
+        "You are doing a great job handling this."
+    ];
+
+    // Path 2: "I'm ready to face this" (Expanded)
+    const faceStatements = [
+        "Your heart is beating fast because your body is preparing you for action.",
+        "This is just adrenaline. It feels intense, but it cannot hurt you.",
+        "You are strong enough to handle this feeling. Let it wash through you.",
+        "Ride the wave. Don't fight it. Let it crash and fade.",
+        "You have survived this before, and you will again.",
+        "Face the feelings. They lose their power when you look at them.",
+        "You are in control. Not the anxiety.",
+        "Breathe into the intensity. Expand around it.",
+        "This is a false alarm. You are safe.",
+        "You are brave. You are capable. You are okay."
+    ];
+
+    const currentStatements = step === 'calm_statements' ? calmStatements : faceStatements;
+
+    const handleNext = () => {
+        if (statementIndex < currentStatements.length - 1) {
+            setStatementIndex(prev => prev + 1);
+            setIsPlaying(false);
+            if (synthRef.current) synthRef.current.cancel();
+        } else {
+            if (step === 'calm_statements') {
+                setStep('grounding_prompt');
             } else {
-                // After statements, move to next step
-                if (step === 'calm_statements') {
-                    setStep('grounding_prompt');
-                } else {
-                    setStep('complete');
-                }
+                setStep('complete');
             }
         }
-    }, [step, statementIndex]);
+    };
+
+    const handlePrev = () => {
+        if (statementIndex > 0) {
+            setStatementIndex(prev => prev - 1);
+            setIsPlaying(false);
+            if (synthRef.current) synthRef.current.cancel();
+        }
+    };
 
     const handleStartCalm = () => {
         setStatementIndex(0);
@@ -70,14 +150,35 @@ export function PanicButton({ onBack }: PanicButtonProps) {
             style={{ background: 'var(--bg-app)' }}
         >
             {/* Header */}
-            <div className="p-4 d-flex align-items-center">
-                <button
-                    onClick={onBack}
-                    className="btn btn-link text-secondary p-2 rounded-circle hover-text-white gravity-button"
-                >
-                    <ArrowLeft size={24} />
-                </button>
-                <h1 className="h5 ms-3 mb-0 text-uppercase tracking-widest fw-bold text-secondary opacity-75">Panic Support</h1>
+            <div className="p-4 d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center">
+                    <button
+                        onClick={onBack}
+                        className="btn btn-link text-secondary p-2 rounded-circle hover-text-primary gravity-button"
+                    >
+                        <ArrowLeft size={24} />
+                    </button>
+                    <h1 className="h5 ms-3 mb-0 text-uppercase tracking-widest fw-bold text-secondary opacity-75">Panic Support</h1>
+                </div>
+
+                {/* Language Selector */}
+                <div className="dropdown">
+                    <button
+                        className="btn btn-sm gravity-button d-flex align-items-center gap-2 text-secondary"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        onClick={(e) => {
+                            // Simple toggle for demo if bootstrap js isn't fully loaded, 
+                            // but ideally use a custom dropdown or standard select
+                            const nextIndex = (LANGUAGES.findIndex(l => l.id === language) + 1) % LANGUAGES.length;
+                            setLanguage(LANGUAGES[nextIndex].id);
+                        }}
+                    >
+                        <Globe size={16} />
+                        <span className="text-uppercase">{language}</span>
+                    </button>
+                </div>
             </div>
 
             {/* Content */}
@@ -93,33 +194,33 @@ export function PanicButton({ onBack }: PanicButtonProps) {
                             style={{ maxWidth: '400px' }}
                         >
                             <div className="text-center mb-5">
-                                <ShieldCheck size={64} className="text-info mb-3" />
+                                <ShieldCheck size={64} className="text-primary mb-3" />
                                 <h2 className="h3 fw-bold text-primary mb-2">You are safe.</h2>
                                 <p className="text-secondary">What do you need right now?</p>
                             </div>
 
                             <button
                                 onClick={handleStartCalm}
-                                className="btn gravity-panel p-4 text-start d-flex align-items-center gap-4 group"
+                                className="btn gravity-panel p-4 text-start d-flex align-items-center gap-4 group hover-bg-light-10"
                             >
-                                <div className="p-3 rounded-circle bg-info bg-opacity-10 text-info group-hover-bg-opacity-20 transition-all">
-                                    <Heart size={32} />
+                                <div className="p-3 rounded-circle bg-opacity-10 text-primary group-hover-bg-opacity-20 transition-all" style={{ backgroundColor: 'rgba(255, 183, 178, 0.2)', color: '#FFB7B2' }}>
+                                    <Heart size={32} fill="#FFB7B2" />
                                 </div>
                                 <div>
-                                    <h3 className="h6 fw-bold text-primary mb-1">Help me feel okay</h3>
+                                    <h3 className="h6 fw-bold text-primary mb-1">Help me feel safe ❤️</h3>
                                     <p className="small text-secondary mb-0">Gentle reassurance & grounding</p>
                                 </div>
                             </button>
 
                             <button
                                 onClick={handleStartFace}
-                                className="btn gravity-panel p-4 text-start d-flex align-items-center gap-4 group"
+                                className="btn gravity-panel p-4 text-start d-flex align-items-center gap-4 group hover-bg-light-10"
                             >
-                                <div className="p-3 rounded-circle bg-warning bg-opacity-10 text-warning group-hover-bg-opacity-20 transition-all">
+                                <div className="p-3 rounded-circle bg-opacity-10 text-warning group-hover-bg-opacity-20 transition-all" style={{ backgroundColor: 'rgba(255, 217, 114, 0.2)', color: '#ECA869' }}>
                                     <Brain size={32} />
                                 </div>
                                 <div>
-                                    <h3 className="h6 fw-bold text-primary mb-1">I'm ready to face this</h3>
+                                    <h3 className="h6 fw-bold text-primary mb-1">I'm ready — let's face this 💪</h3>
                                     <p className="small text-secondary mb-0">Empowerment & strength</p>
                                 </div>
                             </button>
@@ -132,30 +233,57 @@ export function PanicButton({ onBack }: PanicButtonProps) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="text-center px-4"
+                            className="text-center px-4 w-100"
                             style={{ maxWidth: '500px' }}
                         >
-                            <AnimatePresence mode="wait">
-                                <motion.p
-                                    key={statementIndex}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    className="h3 fw-light text-primary lh-base mb-0"
-                                >
-                                    {(step === 'calm_statements' ? calmStatements : faceStatements)[Math.min(statementIndex, (step === 'calm_statements' ? calmStatements : faceStatements).length - 1)]}
-                                </motion.p>
-                            </AnimatePresence>
+                            <div className="gravity-panel p-5 mb-5 position-relative">
+                                <AnimatePresence mode="wait">
+                                    <motion.p
+                                        key={statementIndex}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="h4 fw-medium text-primary lh-base mb-0"
+                                    >
+                                        {currentStatements[statementIndex]}
+                                    </motion.p>
+                                </AnimatePresence>
 
-                            {/* Progress indicator */}
-                            <div className="d-flex justify-content-center gap-2 mt-5">
-                                {(step === 'calm_statements' ? calmStatements : faceStatements).map((_, i) => (
-                                    <div
-                                        key={i}
-                                        className={`rounded-circle transition-all ${i === statementIndex ? 'bg-primary' : 'bg-secondary bg-opacity-25'}`}
-                                        style={{ width: '8px', height: '8px' }}
-                                    />
-                                ))}
+                                <button
+                                    onClick={() => speakText(currentStatements[statementIndex])}
+                                    className={`btn btn-link position-absolute top-0 end-0 m-3 p-2 rounded-circle ${isPlaying ? 'text-primary' : 'text-secondary'}`}
+                                >
+                                    {isPlaying ? <VolumeX size={24} /> : <Volume2 size={24} />}
+                                </button>
+                            </div>
+
+                            {/* Navigation Controls */}
+                            <div className="d-flex align-items-center justify-content-between gap-3">
+                                <button
+                                    onClick={handlePrev}
+                                    disabled={statementIndex === 0}
+                                    className="btn gravity-button p-3 rounded-circle disabled:opacity-50"
+                                >
+                                    <ChevronLeft size={24} />
+                                </button>
+
+                                {/* Progress Dots */}
+                                <div className="d-flex gap-2">
+                                    {currentStatements.map((_, i) => (
+                                        <div
+                                            key={i}
+                                            className={`rounded-circle transition-all ${i === statementIndex ? 'bg-primary' : 'bg-secondary bg-opacity-20'}`}
+                                            style={{ width: '8px', height: '8px' }}
+                                        />
+                                    ))}
+                                </div>
+
+                                <button
+                                    onClick={handleNext}
+                                    className="btn gravity-button p-3 rounded-circle"
+                                >
+                                    <ChevronRight size={24} />
+                                </button>
                             </div>
                         </motion.div>
                     )}
@@ -169,7 +297,7 @@ export function PanicButton({ onBack }: PanicButtonProps) {
                             className="text-center"
                             style={{ maxWidth: '400px' }}
                         >
-                            <h3 className="h5 text-uppercase tracking-widest text-info mb-4">Let's Ground</h3>
+                            <h3 className="h5 text-uppercase tracking-widest text-primary mb-4">Let's Ground</h3>
                             <div className="gravity-panel p-5 mb-4">
                                 <p className="h4 text-primary mb-4">Name 3 things you can see.</p>
                                 <p className="h4 text-primary mb-0">Name 2 things you can touch.</p>
@@ -211,7 +339,7 @@ export function PanicButton({ onBack }: PanicButtonProps) {
                                     onClick={() => setStep('grounding_prompt')}
                                     className="btn gravity-panel p-3 text-start d-flex align-items-center gap-3"
                                 >
-                                    <Coffee size={20} className="text-info" />
+                                    <Coffee size={20} className="text-primary" />
                                     <span className="text-primary">Try a grounding activity</span>
                                 </button>
 
@@ -219,7 +347,7 @@ export function PanicButton({ onBack }: PanicButtonProps) {
                                     onClick={() => setStep('breathing')}
                                     className="btn gravity-panel p-3 text-start d-flex align-items-center gap-3"
                                 >
-                                    <Wind size={20} className="text-info" />
+                                    <Wind size={20} className="text-primary" />
                                     <span className="text-primary">Listen to audio guide</span>
                                 </button>
 
@@ -227,7 +355,7 @@ export function PanicButton({ onBack }: PanicButtonProps) {
                                     onClick={onBack}
                                     className="btn gravity-panel p-3 text-start d-flex align-items-center gap-3"
                                 >
-                                    <BookOpen size={20} className="text-info" />
+                                    <BookOpen size={20} className="text-primary" />
                                     <span className="text-primary">Continue to journal or exit</span>
                                 </button>
                             </div>
