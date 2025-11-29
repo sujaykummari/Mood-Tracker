@@ -1,5 +1,5 @@
-import React from 'react';
-import { Home, BookOpen, Wind, Settings } from 'lucide-react';
+
+import { Home, BookOpen, Wind } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface NavBarProps {
@@ -19,22 +19,24 @@ export function NavBar({ currentView, onNavigate }: NavBarProps) {
     ];
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-50 px-6 pb-6 pt-2 pointer-events-none flex justify-center">
-            <div className="pointer-events-auto bg-black/40 backdrop-blur-xl border border-white/10 rounded-full px-6 py-4 flex items-center gap-8 shadow-2xl">
+        <div className="position-fixed bottom-0 start-0 end-0 z-3 p-3 pb-4 d-flex justify-content-center pe-none">
+            <div className="pe-auto gravity-panel rounded-pill px-4 py-3 d-flex align-items-center gap-4 shadow-lg">
                 {navItems.map((item) => {
                     const isActive = currentView === item.id;
                     return (
                         <button
                             key={item.id}
                             onClick={() => onNavigate(item.id)}
-                            className={`relative flex flex-col items-center gap-1 transition-colors duration-300 ${isActive ? 'text-aurora-400' : 'text-slate-500 hover:text-slate-300'
+                            className={`btn btn-link text-decoration-none p-0 position-relative d-flex flex-column align-items-center gap-1 transition-colors duration-300 ${isActive ? 'text-info' : 'text-secondary'
                                 }`}
+                            style={{ color: isActive ? '#2dd4bf' : undefined }} // Custom color for active state to match aurora
                         >
                             <item.icon size={24} strokeWidth={isActive ? 2.5 : 2} />
                             {isActive && (
                                 <motion.div
                                     layoutId="navIndicator"
-                                    className="absolute -bottom-2 w-1 h-1 bg-aurora-400 rounded-full shadow-[0_0_8px_#2dd4bf]"
+                                    className="position-absolute bottom-0 translate-middle-x start-50"
+                                    style={{ width: '4px', height: '4px', backgroundColor: '#2dd4bf', borderRadius: '50%', marginBottom: '-8px', boxShadow: '0 0 8px #2dd4bf' }}
                                 />
                             )}
                         </button>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Moon } from 'lunarphase-js';
 import { motion } from 'framer-motion';
 
@@ -14,69 +14,6 @@ export function MoonPhase() {
         const currentPhase = Moon.lunarPhase(now);
         setPhase(currentPhase);
     }, []);
-
-    /**
-     * Generates the SVG path for the shadow based on the current phase.
-     * This creates a mathematically accurate representation of the terminator line.
-     */
-    const getShadowPath = () => {
-        const p = phase.toLowerCase();
-
-        // SVG Path commands for a 100x100 coordinate system
-        // M = Move to, A = Arc, L = Line, Z = Close path
-        // The moon is a circle centered at 50,50 with radius 48 (leaving padding)
-
-        // Full Moon: No shadow
-        if (p.includes('full')) return null;
-
-        // New Moon: Full shadow
-        if (p.includes('new')) return "M 50,2 A 48,48 0 1,1 50,98 A 48,48 0 1,1 50,2 Z";
-
-        // Waxing Crescent (Shadow is on the left, concave)
-        if (p.includes('waxing crescent')) {
-            return "M 50,2 A 48,48 0 1,1 50,98 A 48,48 0 0,0 50,2 Z";
-        }
-
-        // First Quarter (Shadow is exactly the left half)
-        if (p.includes('first quarter')) {
-            return "M 50,2 A 48,48 0 0,0 50,98 L 50,2 Z";
-        }
-
-        // Waxing Gibbous (Shadow is on the left, convex - actually small sliver on left)
-        // Wait, Waxing Gibbous means mostly lit. Shadow is a small crescent on the left.
-        if (p.includes('waxing gibbous')) {
-            return "M 50,2 A 48,48 0 1,0 50,98 A 48,48 0 0,0 50,2 Z"; // Incorrect logic, let's simplify
-        }
-
-        // Let's use a simpler approach: A mask that covers the dark part.
-        // We will use standard SVG shapes for the main phases.
-
-        if (p.includes('waxing crescent')) return "M 50,2 A 48,48 0 1,1 50,98 A 30,48 0 1,0 50,2 Z"; // Crescent Light
-        // Actually, we are drawing the SHADOW.
-
-        // Let's map phases to specific SVG paths that represent the DARK part.
-        switch (true) {
-            case p.includes('waxing crescent'): // Light on right, Shadow on left (large)
-                return "M 50,2 A 48,48 0 1,0 50,98 A 25,48 0 0,1 50,2 Z";
-
-            case p.includes('first quarter'): // Light on right half, Shadow on left half
-                return "M 50,2 A 48,48 0 0,0 50,98 L 50,2 Z";
-
-            case p.includes('waxing gibbous'): // Light on right (mostly), Shadow on left (small crescent)
-                return "M 50,2 A 48,48 0 0,0 50,98 A 25,48 0 0,1 50,2 Z"; // Wait, this is tricky.
-
-            case p.includes('waning gibbous'): // Light on left (mostly), Shadow on right (small crescent)
-                return "M 50,2 A 48,48 0 0,1 50,98 A 25,48 0 0,0 50,2 Z";
-
-            case p.includes('last quarter'): // Light on left half, Shadow on right half
-                return "M 50,2 A 48,48 0 0,1 50,98 L 50,2 Z";
-
-            case p.includes('waning crescent'): // Light on left, Shadow on right (large)
-                return "M 50,2 A 48,48 0 1,1 50,98 A 25,48 0 0,0 50,2 Z";
-
-            default: return null;
-        }
-    };
 
     // Improved logic: Use a pre-defined set of masks for the 8 phases
     const renderShadow = () => {
@@ -133,28 +70,29 @@ export function MoonPhase() {
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            className="relative group w-full flex flex-col items-center justify-center py-10"
+            className="position-relative w-100 d-flex flex-column align-items-center justify-content-center py-5"
         >
             {/* Moon Container */}
-            <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full shadow-[0_0_80px_rgba(255,255,255,0.15)]">
+            <div className="position-relative rounded-circle shadow-lg" style={{ width: '20rem', height: '20rem', boxShadow: '0 0 80px rgba(255,255,255,0.15)' }}>
                 {/* Realistic Moon Image */}
                 <img
                     src="/moon.png"
                     alt="Moon"
-                    className="w-full h-full object-cover rounded-full drop-shadow-2xl"
+                    className="w-100 h-100 object-fit-cover rounded-circle"
+                    style={{ filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))' }}
                 />
 
                 {/* SVG Shadow Overlay */}
-                <svg viewBox="0 0 100 100" className="absolute inset-0 w-full h-full rounded-full mix-blend-multiply pointer-events-none">
+                <svg viewBox="0 0 100 100" className="position-absolute top-0 start-0 w-100 h-100 rounded-circle pe-none" style={{ mixBlendMode: 'multiply' }}>
                     {renderShadow()}
                 </svg>
             </div>
 
-            <div className="mt-8 text-center relative z-10">
-                <h3 className="text-3xl font-bold text-starlight tracking-[0.2em] uppercase drop-shadow-lg">
+            <div className="mt-4 text-center position-relative z-1">
+                <h3 className="h2 fw-bold text-light text-uppercase mb-2" style={{ letterSpacing: '0.2em', textShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>
                     {phase}
                 </h3>
-                <p className="text-aurora-400 text-sm font-mono tracking-widest mt-2 uppercase opacity-80">
+                <p className="small font-monospace text-uppercase tracking-widest opacity-75" style={{ color: '#2dd4bf', letterSpacing: '0.1em' }}>
                     Current Phase
                 </p>
             </div>

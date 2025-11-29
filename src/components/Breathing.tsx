@@ -1,10 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Play, Pause, Wind, Volume2, VolumeX } from 'lucide-react';
-
-/**
- * Props for the Breathing component.
- */
 interface BreathingProps {
     onBack: () => void;
     initialTechnique?: string;
@@ -239,25 +235,39 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
         };
     }, [isActive, technique]);
 
+    // Map technique IDs to gradient styles
+    const getTechniqueStyle = (techId: string) => {
+        const gradients: Record<string, string> = {
+            relax: 'linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(168, 85, 247, 0.5))',
+            focus: 'linear-gradient(135deg, rgba(45, 212, 191, 0.5), rgba(16, 185, 129, 0.5))',
+            balance: 'linear-gradient(135deg, rgba(59, 130, 246, 0.5), rgba(6, 182, 212, 0.5))',
+            calm: 'linear-gradient(135deg, rgba(244, 63, 94, 0.5), rgba(236, 72, 153, 0.5))',
+            energy: 'linear-gradient(135deg, rgba(249, 115, 22, 0.5), rgba(245, 158, 11, 0.5))',
+            anxiety: 'linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(217, 70, 239, 0.5))',
+        };
+        return gradients[techId] || gradients.relax;
+    };
+
     return (
         <motion.div
             initial={{ y: 300, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 300, opacity: 0 }}
-            className="min-h-screen p-6 max-w-md mx-auto flex flex-col items-center relative overflow-hidden"
+            className="min-vh-100 p-4 mx-auto d-flex flex-column align-items-center position-relative overflow-hidden"
+            style={{ maxWidth: '480px' }}
         >
-            <header className="w-full flex items-center justify-between mb-8 z-20">
+            <header className="w-100 d-flex align-items-center justify-content-between mb-5 z-3">
                 <button
                     onClick={onBack}
-                    className="p-3 gravity-button rounded-full text-slate-300 hover:text-white"
+                    className="btn btn-link text-secondary p-2 rounded-circle hover-text-white gravity-button"
                 >
                     <ArrowLeft size={24} />
                 </button>
 
-                <div className="flex gap-2">
+                <div className="d-flex gap-2">
                     <button
                         onClick={handleMuteToggle}
-                        className="p-3 gravity-button rounded-full text-slate-300 hover:text-white"
+                        className="btn btn-link text-secondary p-2 rounded-circle hover-text-white gravity-button"
                     >
                         {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
                     </button>
@@ -266,7 +276,7 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                             setShowLibrary(!showLibrary);
                             setIsActive(false);
                         }}
-                        className="px-4 py-2 gravity-button rounded-full text-xs font-mono uppercase tracking-widest flex items-center gap-2"
+                        className="btn btn-outline-light rounded-pill px-3 py-2 small font-monospace text-uppercase tracking-widest d-flex align-items-center gap-2 gravity-button border-0"
                     >
                         <Wind size={14} />
                         {showLibrary ? 'Close' : 'Exercises'}
@@ -281,25 +291,28 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="w-full space-y-4 pb-20 overflow-y-auto"
+                        className="w-100 pb-5 overflow-auto"
+                        style={{ maxHeight: '80vh' }}
                     >
-                        <h2 className="text-xl font-bold mb-6 text-starlight uppercase tracking-widest border-b border-white/10 pb-4">Exercises</h2>
-                        {Object.values(TECHNIQUES).map((t) => (
-                            <button
-                                key={t.id}
-                                onClick={() => {
-                                    setTechnique(t);
-                                    setShowLibrary(false);
-                                }}
-                                className={`w-full p-5 rounded-2xl gravity-panel text-left transition-all hover:bg-white/5 group border-l-4 ${technique.id === t.id ? 'border-l-aurora-400 bg-white/5' : 'border-l-transparent'}`}
-                            >
-                                <div className="flex justify-between items-start mb-2">
-                                    <h3 className="font-bold text-lg text-slate-200 group-hover:text-aurora-400 transition-colors">{t.name}</h3>
-                                    {technique.id === t.id && <div className="w-2 h-2 rounded-full bg-aurora-400 shadow-[0_0_10px_#2dd4bf]" />}
-                                </div>
-                                <p className="text-xs text-slate-400 font-mono leading-relaxed">{t.description}</p>
-                            </button>
-                        ))}
+                        <h2 className="h5 fw-bold mb-4 text-light text-uppercase tracking-widest border-bottom border-white border-opacity-10 pb-3">Exercises</h2>
+                        <div className="d-flex flex-column gap-3">
+                            {Object.values(TECHNIQUES).map((t) => (
+                                <button
+                                    key={t.id}
+                                    onClick={() => {
+                                        setTechnique(t);
+                                        setShowLibrary(false);
+                                    }}
+                                    className={`btn w-100 p-4 rounded-4 text-start transition-all border-start border-4 gravity-panel ${technique.id === t.id ? 'border-info bg-light bg-opacity-10' : 'border-transparent'}`}
+                                >
+                                    <div className="d-flex justify-content-between align-items-start mb-2">
+                                        <h3 className={`h6 fw-bold mb-0 transition-colors ${technique.id === t.id ? 'text-info' : 'text-light'}`}>{t.name}</h3>
+                                        {technique.id === t.id && <div className="rounded-circle bg-info shadow-sm" style={{ width: '8px', height: '8px' }} />}
+                                    </div>
+                                    <p className="small text-secondary font-monospace mb-0 lh-base">{t.description}</p>
+                                </button>
+                            ))}
+                        </div>
                     </motion.div>
                 ) : (
                     <motion.div
@@ -307,14 +320,14 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.9 }}
-                        className="flex-1 flex flex-col items-center justify-center w-full"
+                        className="flex-1 d-flex flex-column align-items-center justify-content-center w-100"
                     >
-                        <div className="text-center mb-12 relative z-10">
-                            <h2 className="text-2xl font-bold mb-2 text-starlight uppercase tracking-widest">{technique.name}</h2>
-                            <p className="text-slate-400 font-mono text-xs max-w-[250px] mx-auto">{technique.description}</p>
+                        <div className="text-center mb-5 position-relative z-1">
+                            <h2 className="h3 fw-bold mb-2 text-light text-uppercase tracking-widest">{technique.name}</h2>
+                            <p className="text-secondary font-monospace small mx-auto" style={{ maxWidth: '250px' }}>{technique.description}</p>
                         </div>
 
-                        <div className="relative flex items-center justify-center mb-16">
+                        <div className="position-relative d-flex align-items-center justify-content-center mb-5">
                             {/* Animated Background Glow - Energy Field */}
                             <motion.div
                                 animate={{
@@ -326,7 +339,13 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                                     repeat: Infinity,
                                     ease: "easeInOut"
                                 }}
-                                className={`w-64 h-64 rounded-full bg-gradient-to-br ${technique.color} blur-[60px] absolute`}
+                                className="rounded-circle position-absolute"
+                                style={{
+                                    width: '256px',
+                                    height: '256px',
+                                    background: getTechniqueStyle(technique.id),
+                                    filter: 'blur(60px)'
+                                }}
                             />
 
                             {/* Breathing Circle - HUD Ring */}
@@ -339,13 +358,15 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
                                     duration: isActive ? (phase === 'Inhale' ? technique.pattern[0] : technique.pattern[2]) / 1000 : 0.5,
                                     ease: "easeInOut"
                                 }}
-                                className="w-48 h-48 rounded-full border-2 border-white/10 flex items-center justify-center gravity-panel relative z-10 shadow-2xl backdrop-blur-xl"
+                                className="rounded-circle border border-2 border-white border-opacity-10 d-flex align-items-center justify-content-center gravity-panel position-relative z-1 shadow-lg backdrop-blur-xl"
+                                style={{ width: '192px', height: '192px' }}
                             >
                                 <motion.span
                                     key={phase}
                                     initial={{ opacity: 0, y: 5 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="text-2xl font-light tracking-[0.3em] uppercase text-starlight"
+                                    className="h3 fw-light text-uppercase text-light mb-0"
+                                    style={{ letterSpacing: '0.3em' }}
                                 >
                                     {phase}
                                 </motion.span>
@@ -354,9 +375,9 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
 
                         <button
                             onClick={handleTogglePlay}
-                            className="gravity-button px-12 py-5 rounded-2xl flex items-center gap-3 text-sm font-bold uppercase tracking-widest group"
+                            className="btn gravity-button px-5 py-3 rounded-4 d-flex align-items-center gap-3 small fw-bold text-uppercase tracking-widest text-light"
                         >
-                            {isActive ? <Pause size={18} /> : <Play size={18} className="ml-1" />}
+                            {isActive ? <Pause size={18} /> : <Play size={18} className="ms-1" />}
                             {isActive ? 'Pause' : 'Start'}
                         </button>
                     </motion.div>

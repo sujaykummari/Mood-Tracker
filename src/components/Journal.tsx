@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Plus, Trash2, Save, Search, Calendar, Edit3, Palette, Check } from 'lucide-react';
 
@@ -73,7 +73,7 @@ export function Journal({ onBack }: JournalProps) {
       date: new Date().toISOString(),
       title: '',
       content: '',
-      color: NOTE_COLORS[0].class,
+      color: NOTE_COLORS[0].id,
     };
     setCurrentEntry(newEntry);
     setView('edit');
@@ -134,48 +134,70 @@ export function Journal({ onBack }: JournalProps) {
     e.content.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Get current active glow for background
-  const activeGlow = currentEntry
-    ? NOTE_COLORS.find(c => c.class === currentEntry.color)?.glow
-    : null;
+
+
+  // Map colors to inline styles or Bootstrap classes
+  const getNoteStyle = (colorId: string) => {
+    const styles: Record<string, any> = {
+      nebula: { backgroundColor: 'rgba(99, 102, 241, 0.3)', borderColor: 'rgba(99, 102, 241, 0.5)', boxShadow: '0 0 30px rgba(99, 102, 241, 0.15)' },
+      aurora: { backgroundColor: 'rgba(45, 212, 191, 0.3)', borderColor: 'rgba(45, 212, 191, 0.5)', boxShadow: '0 0 30px rgba(45, 212, 191, 0.15)' },
+      plasma: { backgroundColor: 'rgba(168, 85, 247, 0.3)', borderColor: 'rgba(168, 85, 247, 0.5)', boxShadow: '0 0 30px rgba(168, 85, 247, 0.15)' },
+      solar: { backgroundColor: 'rgba(249, 115, 22, 0.3)', borderColor: 'rgba(249, 115, 22, 0.5)', boxShadow: '0 0 30px rgba(249, 115, 22, 0.15)' },
+      mars: { backgroundColor: 'rgba(244, 63, 94, 0.3)', borderColor: 'rgba(244, 63, 94, 0.5)', boxShadow: '0 0 30px rgba(244, 63, 94, 0.15)' },
+      ocean: { backgroundColor: 'rgba(14, 165, 233, 0.3)', borderColor: 'rgba(14, 165, 233, 0.5)', boxShadow: '0 0 30px rgba(14, 165, 233, 0.15)' },
+      terra: { backgroundColor: 'rgba(16, 185, 129, 0.3)', borderColor: 'rgba(16, 185, 129, 0.5)', boxShadow: '0 0 30px rgba(16, 185, 129, 0.15)' },
+      lunar: { backgroundColor: 'rgba(100, 116, 139, 0.3)', borderColor: 'rgba(100, 116, 139, 0.5)', boxShadow: '0 0 30px rgba(100, 116, 139, 0.15)' },
+      gold: { backgroundColor: 'rgba(234, 179, 8, 0.3)', borderColor: 'rgba(234, 179, 8, 0.5)', boxShadow: '0 0 30px rgba(234, 179, 8, 0.15)' },
+      love: { backgroundColor: 'rgba(236, 72, 153, 0.3)', borderColor: 'rgba(236, 72, 153, 0.5)', boxShadow: '0 0 30px rgba(236, 72, 153, 0.15)' },
+      void: { backgroundColor: 'rgba(0, 0, 0, 0.6)', borderColor: 'rgba(255, 255, 255, 0.2)', boxShadow: '0 0 30px rgba(255, 255, 255, 0.05)' },
+    };
+    return styles[colorId] || styles.nebula;
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen w-full flex flex-col relative overflow-hidden transition-colors duration-1000"
+      className="min-vh-100 w-100 d-flex flex-column position-relative overflow-hidden transition-colors duration-1000"
     >
-      {/* Dynamic Background Glow */}
+      {/* Dynamic Background Glow - simplified for now */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br transition-colors duration-1000 -z-10 ${activeGlow || 'from-slate-900 to-black'}`}
-        style={{ opacity: view === 'edit' ? 0.4 : 0 }}
+        className="position-absolute top-0 start-0 w-100 h-100"
+        style={{
+          background: currentEntry ? `radial-gradient(circle at center, ${getNoteStyle(currentEntry.color.split('-')[0] || 'nebula').backgroundColor}, transparent 70%)` : 'none',
+          opacity: view === 'edit' ? 0.4 : 0,
+          zIndex: -1,
+          transition: 'opacity 1s ease'
+        }}
       />
 
       {/* Header */}
-      <header className="px-6 py-6 flex items-center justify-between z-20 bg-gradient-to-b from-black/80 to-transparent sticky top-0 backdrop-blur-sm">
+      <header className="p-4 d-flex align-items-center justify-content-between z-3 sticky-top backdrop-blur-sm" style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.8), transparent)' }}>
         <button
           onClick={view === 'edit' ? () => setView('list') : onBack}
-          className="p-3 gravity-button rounded-full text-slate-300 hover:text-white"
+          className="btn btn-link text-secondary p-2 rounded-circle hover-text-white gravity-button"
         >
           <ArrowLeft size={24} />
         </button>
 
-        <h2 className="text-lg font-bold uppercase tracking-widest text-starlight">
+        <h2 className="h5 fw-bold text-uppercase tracking-widest text-light mb-0">
           {view === 'list' ? 'Journal' : 'Edit Note'}
         </h2>
 
         {view === 'list' ? (
           <button
             onClick={handleNewEntry}
-            className="p-3 rounded-full bg-aurora-500/20 text-aurora-400 hover:bg-aurora-500 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(45,212,191,0.3)]"
+            className="btn btn-link p-2 rounded-circle text-info hover-bg-info hover-text-white transition-all shadow-sm"
+            style={{ backgroundColor: 'rgba(45, 212, 191, 0.2)' }}
           >
             <Plus size={24} />
           </button>
         ) : (
           <button
             onClick={handleSaveEntry}
-            className="px-6 py-3 rounded-full bg-nebula-500/20 text-nebula-400 hover:bg-nebula-500 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(99,102,241,0.3)] flex items-center gap-2 font-bold uppercase tracking-wider text-xs"
+            className="btn btn-primary rounded-pill px-4 py-2 d-flex align-items-center gap-2 fw-bold text-uppercase small shadow-sm"
+            style={{ backgroundColor: 'rgba(99, 102, 241, 0.5)', borderColor: 'rgba(99, 102, 241, 0.5)' }}
           >
             <Save size={18} />
             <span>Save</span>
@@ -190,47 +212,50 @@ export function Journal({ onBack }: JournalProps) {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="flex-1 px-4 pb-24 overflow-y-auto"
+            className="flex-1 px-4 pb-5 overflow-auto"
           >
             {/* Search Bar */}
-            <div className="relative mb-6">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+            <div className="position-relative mb-4">
+              <Search className="position-absolute top-50 translate-middle-y text-secondary" style={{ left: '1rem' }} size={18} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search notes..."
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-4 text-slate-300 placeholder:text-slate-600 focus:outline-none focus:border-white/20 transition-colors"
+                className="form-control bg-transparent border-secondary text-light placeholder-secondary rounded-pill py-2 ps-5 pe-3"
+                style={{ borderColor: 'rgba(255,255,255,0.1)' }}
               />
             </div>
 
             {/* Grid of Notes */}
             {filteredEntries.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 text-slate-500">
-                <Edit3 size={48} className="mb-4 opacity-20" />
-                <p className="text-sm font-mono uppercase tracking-widest">No entries yet</p>
-                <button onClick={handleNewEntry} className="mt-4 text-aurora-400 hover:underline text-sm">Create your first note</button>
+              <div className="d-flex flex-column align-items-center justify-content-center py-5 text-secondary">
+                <Edit3 size={48} className="mb-3 opacity-25" />
+                <p className="small font-monospace text-uppercase tracking-widest">No entries yet</p>
+                <button onClick={handleNewEntry} className="btn btn-link text-info text-decoration-none small">Create your first note</button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="row g-3">
                 {filteredEntries.map((entry) => (
-                  <motion.button
-                    key={entry.id}
-                    layoutId={`note-${entry.id}`}
-                    onClick={() => handleEditEntry(entry)}
-                    className={`text-left p-5 rounded-3xl border backdrop-blur-md transition-all duration-300 hover:scale-[1.02] active:scale-95 group flex flex-col h-48 relative overflow-hidden ${entry.color}`}
-                  >
-                    <h3 className="font-bold text-lg text-white mb-2 line-clamp-1 relative z-10">{entry.title}</h3>
-                    <p className="text-slate-200 text-sm leading-relaxed line-clamp-3 mb-auto font-light relative z-10 opacity-90">
-                      {entry.content || <span className="italic opacity-50">No content</span>}
-                    </p>
-                    <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/10 w-full relative z-10">
-                      <Calendar size={12} className="text-slate-300" />
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-slate-300">
-                        {new Date(entry.date).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </motion.button>
+                  <div className="col-12 col-sm-6" key={entry.id}>
+                    <motion.button
+                      layoutId={`note-${entry.id}`}
+                      onClick={() => handleEditEntry(entry)}
+                      className="btn border w-100 text-start p-4 rounded-4 backdrop-blur-md transition-transform hover-scale-102 active-scale-95 d-flex flex-column position-relative overflow-hidden"
+                      style={{ height: '200px', ...getNoteStyle(entry.color.split('-')[0] || 'nebula') }}
+                    >
+                      <h3 className="h5 fw-bold text-white mb-2 text-truncate position-relative z-1">{entry.title}</h3>
+                      <p className="text-light small opacity-75 mb-auto position-relative z-1 text-truncate-3" style={{ whiteSpace: 'normal', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
+                        {entry.content || <span className="fst-italic opacity-50">No content</span>}
+                      </p>
+                      <div className="d-flex align-items-center gap-2 mt-3 pt-3 border-top border-white border-opacity-10 w-100 position-relative z-1">
+                        <Calendar size={12} className="text-light opacity-50" />
+                        <span className="small font-monospace text-uppercase tracking-widest text-light opacity-50" style={{ fontSize: '10px' }}>
+                          {new Date(entry.date).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </motion.button>
+                  </div>
                 ))}
               </div>
             )}
@@ -241,38 +266,43 @@ export function Journal({ onBack }: JournalProps) {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="flex-1 flex flex-col px-6 pb-6 max-w-2xl mx-auto w-full"
+            className="flex-1 d-flex flex-column px-4 pb-4 mx-auto w-100"
+            style={{ maxWidth: '700px' }}
           >
-            {/* Color Picker - Enhanced */}
-            <div className="mb-6 relative z-30">
-              <div className="flex items-center gap-2 mb-3 text-xs font-bold text-slate-500 uppercase tracking-widest">
+            {/* Color Picker */}
+            <div className="mb-4 position-relative z-3">
+              <div className="d-flex align-items-center gap-2 mb-2 small fw-bold text-secondary text-uppercase tracking-widest">
                 <Palette size={14} />
                 <span>Theme</span>
               </div>
-              <div className="flex gap-3 overflow-x-auto py-2 no-scrollbar">
+              <div className="d-flex gap-2 overflow-auto py-2 no-scrollbar">
                 {NOTE_COLORS.map((theme) => (
                   <button
                     key={theme.id}
-                    onClick={() => setCurrentEntry(prev => prev ? { ...prev, color: theme.class } : null)}
-                    className={`w-10 h-10 rounded-full border-2 transition-all duration-300 flex-shrink-0 flex items-center justify-center ${theme.class.split(' ')[0]} ${currentEntry?.color === theme.class ? 'border-white scale-110 shadow-[0_0_15px_rgba(255,255,255,0.8)]' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                    onClick={() => setCurrentEntry(prev => prev ? { ...prev, color: theme.id } : null)}
+                    className={`btn rounded-circle border-2 p-0 d-flex align-items-center justify-content-center flex-shrink-0 transition-all ${currentEntry?.color === theme.id ? 'border-white scale-110 shadow' : 'border-transparent opacity-50 hover-opacity-100'}`}
+                    style={{ width: '40px', height: '40px', ...getNoteStyle(theme.id) }}
                     title={theme.label}
                   >
-                    {currentEntry?.color === theme.class && <Check size={16} className="text-white drop-shadow-md" />}
+                    {currentEntry?.color === theme.id && <Check size={16} className="text-white drop-shadow" />}
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className={`flex-1 rounded-3xl p-6 border backdrop-blur-xl flex flex-col transition-all duration-500 relative z-10 ${currentEntry?.color || NOTE_COLORS[0].class}`}>
+            <div
+              className="flex-1 rounded-4 p-4 border backdrop-blur-xl d-flex flex-column transition-all position-relative z-1"
+              style={currentEntry ? getNoteStyle(currentEntry.color.split('-')[0] || 'nebula') : {}}
+            >
               <input
                 type="text"
                 value={currentEntry?.title || ''}
                 onChange={(e) => setCurrentEntry(prev => prev ? { ...prev, title: e.target.value } : null)}
                 placeholder="Title"
-                className="bg-transparent border-none text-3xl font-bold text-white placeholder:text-white/30 focus:outline-none mb-4 w-full drop-shadow-md"
+                className="form-control bg-transparent border-0 fs-2 fw-bold text-white placeholder-white-50 shadow-none mb-3"
               />
 
-              <div className="flex items-center gap-2 mb-6 text-white/60 text-xs font-mono uppercase tracking-widest">
+              <div className="d-flex align-items-center gap-2 mb-4 text-white-50 small font-monospace text-uppercase tracking-widest">
                 <Calendar size={12} />
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
               </div>
@@ -281,15 +311,16 @@ export function Journal({ onBack }: JournalProps) {
                 value={currentEntry?.content || ''}
                 onChange={(e) => setCurrentEntry(prev => prev ? { ...prev, content: e.target.value } : null)}
                 placeholder="Start writing..."
-                className="flex-1 bg-transparent border-none text-lg leading-relaxed text-slate-50 placeholder:text-white/20 focus:outline-none resize-none font-sans drop-shadow-sm"
+                className="form-control flex-1 bg-transparent border-0 fs-5 text-light placeholder-white-50 shadow-none resize-none"
+                style={{ minHeight: '200px' }}
               />
             </div>
 
             {/* Delete Button */}
-            <div className="mt-6 flex justify-center">
+            <div className="mt-4 d-flex justify-center">
               <button
                 onClick={handleDeleteEntry}
-                className="flex items-center gap-2 text-red-400 hover:text-red-300 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full hover:bg-red-500/10 transition-colors"
+                className="btn btn-link text-danger text-decoration-none d-flex align-items-center gap-2 small fw-bold text-uppercase tracking-widest px-3 py-2 rounded-pill hover-bg-danger-10"
               >
                 <Trash2 size={16} />
                 Delete Note

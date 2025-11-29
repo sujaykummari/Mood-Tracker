@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { SignIn } from './components/SignIn';
 import { Dashboard } from './components/Dashboard';
@@ -38,7 +38,7 @@ function AppContent() {
 
     // Render the current view with exit/enter animations.
     return (
-        <div className="pb-24"> {/* Padding for bottom nav */}
+        <div className="pb-5 mb-5"> {/* Padding for bottom nav */}
             <AnimatePresence mode="wait">
                 {currentView === 'dashboard' && (
                     <Dashboard

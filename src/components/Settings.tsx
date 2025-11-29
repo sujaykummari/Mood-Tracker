@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Bell, Clock, Check, Shield, User, Smartphone } from 'lucide-react';
+import { ArrowLeft, Bell, Clock, Check, User } from 'lucide-react';
 
 /**
  * Props for the Settings component.
@@ -54,40 +54,55 @@ export function Settings({ onBack }: SettingsProps) {
             initial={{ x: 300, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -300, opacity: 0 }}
-            className="min-h-screen p-6 w-full max-w-2xl mx-auto flex flex-col"
+            className="min-vh-100 p-4 w-100 mx-auto d-flex flex-column"
+            style={{ maxWidth: '672px' }}
         >
-            <header className="flex items-center justify-between mb-10">
+            <header className="d-flex align-items-center justify-content-between mb-5">
                 <button
                     onClick={onBack}
-                    className="p-3 gravity-button rounded-full text-slate-300 hover:text-white"
+                    className="btn btn-link text-secondary p-2 rounded-circle hover-text-white gravity-button"
                 >
                     <ArrowLeft size={24} />
                 </button>
-                <h2 className="text-xl font-bold uppercase tracking-widest text-starlight">Settings</h2>
-                <div className="w-12" /> {/* Spacer for centering */}
+                <h2 className="h5 fw-bold text-uppercase tracking-widest text-light mb-0">Settings</h2>
+                <div style={{ width: '48px' }} /> {/* Spacer for centering */}
             </header>
 
-            <div className="space-y-6">
+            <div className="d-flex flex-column gap-4">
                 {/* Notifications Section */}
-                <div className="gravity-panel p-8 rounded-3xl">
-                    <div className="flex items-center gap-4 mb-8 border-b border-white/5 pb-6">
-                        <div className="p-3 rounded-full bg-nebula-500/10 text-nebula-400 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+                <div className="gravity-panel p-4 rounded-4">
+                    <div className="d-flex align-items-center gap-3 mb-4 border-bottom border-white border-opacity-10 pb-4">
+                        <div className="p-2 rounded-circle bg-primary bg-opacity-10 text-primary shadow-sm" style={{ backgroundColor: 'rgba(99, 102, 241, 0.1)', color: '#818cf8' }}>
                             <Bell size={24} />
                         </div>
                         <div>
-                            <h3 className="text-lg font-bold text-starlight">Notifications</h3>
-                            <p className="text-sm text-slate-400">Manage your daily check-in reminders</p>
+                            <h3 className="h6 fw-bold text-light mb-0">Notifications</h3>
+                            <p className="small text-secondary mb-0">Manage your daily check-in reminders</p>
                         </div>
                     </div>
 
-                    <div className="space-y-6">
-                        <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5">
-                            <span className="font-medium text-slate-300">Enable Daily Reminders</span>
+                    <div className="d-flex flex-column gap-3">
+                        <div className="d-flex align-items-center justify-content-between p-3 rounded-3 border border-white border-opacity-10 bg-light bg-opacity-10">
+                            <span className="fw-medium text-light">Enable Daily Reminders</span>
                             <button
                                 onClick={() => setEnabled(!enabled)}
-                                className={`w-14 h-8 rounded-full transition-all duration-300 relative ${enabled ? 'bg-aurora-500 shadow-[0_0_15px_rgba(45,212,191,0.4)]' : 'bg-slate-800'}`}
+                                className="btn p-0 rounded-pill position-relative transition-all border-0"
+                                style={{
+                                    width: '3.5rem',
+                                    height: '2rem',
+                                    backgroundColor: enabled ? '#2dd4bf' : '#1e293b',
+                                    boxShadow: enabled ? '0 0 15px rgba(45,212,191,0.4)' : 'none'
+                                }}
                             >
-                                <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform duration-300 shadow-sm ${enabled ? 'translate-x-6' : 'translate-x-0'}`} />
+                                <div
+                                    className="position-absolute top-50 translate-middle-y bg-white rounded-circle shadow-sm transition-transform"
+                                    style={{
+                                        width: '1.5rem',
+                                        height: '1.5rem',
+                                        left: '0.25rem',
+                                        transform: enabled ? 'translateX(1.5rem)' : 'translateX(0)'
+                                    }}
+                                />
                             </button>
                         </div>
 
@@ -99,7 +114,7 @@ export function Settings({ onBack }: SettingsProps) {
                                     exit={{ height: 0, opacity: 0 }}
                                     className="overflow-hidden"
                                 >
-                                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <label className="d-block small fw-bold text-secondary text-uppercase tracking-widest mb-2 d-flex align-items-center gap-2">
                                         <Clock size={14} />
                                         Reminder Time
                                     </label>
@@ -107,7 +122,7 @@ export function Settings({ onBack }: SettingsProps) {
                                         type="time"
                                         value={time}
                                         onChange={(e) => setTime(e.target.value)}
-                                        className="gravity-input w-full text-xl tracking-widest text-center font-mono"
+                                        className="form-control gravity-input w-100 fs-5 text-center font-monospace tracking-widest"
                                     />
                                 </motion.div>
                             )}
@@ -116,26 +131,27 @@ export function Settings({ onBack }: SettingsProps) {
                 </div>
 
                 {/* Account Section (Visual Only for now) */}
-                <div className="gravity-panel p-8 rounded-3xl opacity-80">
-                    <div className="flex items-center gap-4 mb-6 border-b border-white/5 pb-6">
-                        <div className="p-3 rounded-full bg-plasma-500/10 text-plasma-400">
+                <div className="gravity-panel p-4 rounded-4 opacity-75">
+                    <div className="d-flex align-items-center gap-3 mb-4 border-bottom border-white border-opacity-10 pb-4">
+                        <div className="p-2 rounded-circle bg-info bg-opacity-10 text-info" style={{ backgroundColor: 'rgba(168, 85, 247, 0.1)', color: '#a855f7' }}>
                             <User size={24} />
                         </div>
                         <div>
-                            <h3 className="text-lg font-bold text-starlight">Account</h3>
-                            <p className="text-sm text-slate-400">Manage your profile and data</p>
+                            <h3 className="h6 fw-bold text-light mb-0">Account</h3>
+                            <p className="small text-secondary mb-0">Manage your profile and data</p>
                         </div>
                     </div>
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/5 text-slate-400 text-sm text-center">
+                    <div className="p-3 rounded-3 border border-white border-opacity-10 bg-light bg-opacity-10 text-secondary small text-center">
                         Signed in locally. Data is stored on this device.
                     </div>
                 </div>
 
                 <button
                     onClick={handleSave}
-                    className="w-full gravity-button py-5 rounded-xl font-bold text-starlight mt-8 flex items-center justify-center gap-2 group uppercase tracking-wider text-sm sticky bottom-6 shadow-xl backdrop-blur-xl bg-black/50"
+                    className="btn w-100 gravity-button py-3 rounded-4 fw-bold text-light mt-4 d-flex align-items-center justify-content-center gap-2 text-uppercase small sticky-bottom shadow-lg backdrop-blur-xl"
+                    style={{ bottom: '1.5rem', backgroundColor: 'rgba(0,0,0,0.5)' }}
                 >
-                    {saved ? <Check size={18} className="text-aurora-400" /> : null}
+                    {saved ? <Check size={18} className="text-info" style={{ color: '#2dd4bf' }} /> : null}
                     {saved ? 'Settings Saved' : 'Save Changes'}
                 </button>
             </div>
