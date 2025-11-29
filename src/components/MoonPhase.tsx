@@ -18,10 +18,10 @@ export function MoonPhase() {
     // Improved logic: Use a pre-defined set of masks for the 8 phases
     const renderShadow = () => {
         const p = phase.toLowerCase();
-        const r = 50; // Radius to cover full container
+        const r = 54; // Radius significantly larger to ensure full coverage
         const c = 50; // Center
 
-        // We draw the SHADOW (Black overlay)
+        // We draw the SHADOW (Black overlay) - Semi-transparent with multiply blend for realism
 
         if (p.includes('new')) {
             return <circle cx={c} cy={c} r={r} fill="black" opacity="0.9" />;
@@ -32,34 +32,31 @@ export function MoonPhase() {
 
         // First Quarter: Shadow on Left
         if (p.includes('first quarter')) {
-            return <path d={`M ${c},${c - r} A ${r},${r} 0 0,0 ${c},${c + r} Z`} fill="black" opacity="0.85" />;
+            return <path d={`M ${c},${c - r} A ${r},${r} 0 0,0 ${c},${c + r} Z`} fill="black" opacity="0.9" />;
         }
         // Last Quarter: Shadow on Right
         if (p.includes('last quarter')) {
-            return <path d={`M ${c},${c - r} A ${r},${r} 0 0,1 ${c},${c + r} Z`} fill="black" opacity="0.85" />;
+            return <path d={`M ${c},${c - r} A ${r},${r} 0 0,1 ${c},${c + r} Z`} fill="black" opacity="0.9" />;
         }
 
         // Waxing Crescent: Shadow is mostly the left side, but curved.
-        // Visual: )  (Light is on right)
         if (p.includes('waxing crescent')) {
-            // Large shadow on left
             return <path d={`M ${c},${c - r} A ${r},${r} 0 1,0 ${c},${c + r} A ${r * 0.6},${r} 0 0,1 ${c},${c - r} Z`} fill="black" opacity="0.9" />;
         }
 
         // Waning Crescent: Shadow is mostly the right side.
-        // Visual: (  (Light is on left)
         if (p.includes('waning crescent')) {
             return <path d={`M ${c},${c - r} A ${r},${r} 0 1,1 ${c},${c + r} A ${r * 0.6},${r} 0 0,0 ${c},${c - r} Z`} fill="black" opacity="0.9" />;
         }
 
         // Waxing Gibbous: Shadow is a small sliver on the left.
         if (p.includes('waxing gibbous')) {
-            return <path d={`M ${c},${c - r} A ${r},${r} 0 0,0 ${c},${c + r} A ${r * 0.6},${r} 0 0,1 ${c},${c - r} Z`} fill="black" opacity="0.85" />;
+            return <path d={`M ${c},${c - r} A ${r},${r} 0 0,0 ${c},${c + r} A ${r * 0.6},${r} 0 0,1 ${c},${c - r} Z`} fill="black" opacity="0.9" />;
         }
 
         // Waning Gibbous: Shadow is a small sliver on the right.
         if (p.includes('waning gibbous')) {
-            return <path d={`M ${c},${c - r} A ${r},${r} 0 0,1 ${c},${c + r} A ${r * 0.6},${r} 0 0,0 ${c},${c - r} Z`} fill="black" opacity="0.85" />;
+            return <path d={`M ${c},${c - r} A ${r},${r} 0 0,1 ${c},${c + r} A ${r * 0.6},${r} 0 0,0 ${c},${c - r} Z`} fill="black" opacity="0.9" />;
         }
 
         return <circle cx={c} cy={c} r={r} fill="black" opacity="0.5" />; // Fallback
