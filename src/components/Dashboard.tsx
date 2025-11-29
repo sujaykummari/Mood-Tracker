@@ -107,8 +107,8 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                                     {selectedMood === item.emoji && (
                                         <motion.div
                                             layoutId="activeMoodIndicator"
-                                            className="position-absolute bottom-0 w-1 h-1 bg-info rounded-circle shadow-sm"
-                                            style={{ marginBottom: '-4px' }}
+                                            className="position-absolute bottom-0 w-1 h-1 rounded-circle shadow-sm"
+                                            style={{ marginBottom: '-4px', backgroundColor: '#a78bfa' }}
                                         />
                                     )}
                                 </button>
@@ -127,7 +127,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                             onClick={() => onNavigate('journal')}
                             className="btn border-0 w-100 h-100 gravity-panel p-4 rounded-4 d-flex flex-column align-items-center gap-3 hover-bg-light-10 transition-all duration-300 active-scale-95 border border-light border-opacity-10"
                         >
-                            <div className="p-3 rounded-circle bg-primary bg-opacity-10 text-primary hover-text-white hover-scale-110 transition-all duration-300 shadow-sm">
+                            <div className="p-3 rounded-circle bg-opacity-10 hover-text-white hover-scale-110 transition-all duration-300 shadow-sm" style={{ backgroundColor: 'rgba(167, 139, 250, 0.1)', color: '#a78bfa' }}>
                                 <BookOpen size={24} />
                             </div>
                             <span className="fw-bold text-secondary hover-text-white tracking-wide text-uppercase small">Journal</span>
@@ -142,7 +142,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                             onClick={() => onNavigate('breathing')}
                             className="btn border-0 w-100 h-100 gravity-panel p-4 rounded-4 d-flex flex-column align-items-center gap-3 hover-bg-light-10 transition-all duration-300 active-scale-95 border border-light border-opacity-10"
                         >
-                            <div className="p-3 rounded-circle bg-info bg-opacity-10 text-info hover-text-white hover-scale-110 transition-all duration-300 shadow-sm">
+                            <div className="p-3 rounded-circle bg-opacity-10 hover-text-white hover-scale-110 transition-all duration-300 shadow-sm" style={{ backgroundColor: 'rgba(129, 140, 248, 0.1)', color: '#818cf8' }}>
                                 <Wind size={24} />
                             </div>
                             <span className="fw-bold text-secondary hover-text-white tracking-wide text-uppercase small">Breathe</span>

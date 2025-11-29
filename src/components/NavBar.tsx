@@ -27,16 +27,16 @@ export function NavBar({ currentView, onNavigate }: NavBarProps) {
                         <button
                             key={item.id}
                             onClick={() => onNavigate(item.id)}
-                            className={`btn btn-link text-decoration-none p-0 position-relative d-flex flex-column align-items-center gap-1 transition-colors duration-300 ${isActive ? 'text-info' : 'text-secondary'
+                            className={`btn btn-link text-decoration-none p-0 position-relative d-flex flex-column align-items-center gap-1 transition-colors duration-300 ${isActive ? 'text-primary' : 'text-secondary'
                                 }`}
-                            style={{ color: isActive ? '#2dd4bf' : undefined }} // Custom color for active state to match aurora
+                            style={{ color: isActive ? '#a78bfa' : undefined }} // Custom color for active state to match lavender
                         >
                             <item.icon size={24} strokeWidth={isActive ? 2.5 : 2} />
                             {isActive && (
                                 <motion.div
                                     layoutId="navIndicator"
                                     className="position-absolute bottom-0 translate-middle-x start-50"
-                                    style={{ width: '4px', height: '4px', backgroundColor: '#2dd4bf', borderRadius: '50%', marginBottom: '-8px', boxShadow: '0 0 8px #2dd4bf' }}
+                                    style={{ width: '4px', height: '4px', backgroundColor: '#a78bfa', borderRadius: '50%', marginBottom: '-8px', boxShadow: '0 0 8px #a78bfa' }}
                                 />
                             )}
                         </button>

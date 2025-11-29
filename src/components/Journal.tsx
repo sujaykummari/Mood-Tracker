@@ -139,17 +139,17 @@ export function Journal({ onBack }: JournalProps) {
   // Map colors to inline styles or Bootstrap classes
   const getNoteStyle = (colorId: string) => {
     const styles: Record<string, any> = {
-      nebula: { backgroundColor: 'rgba(99, 102, 241, 0.3)', borderColor: 'rgba(99, 102, 241, 0.5)', boxShadow: '0 0 30px rgba(99, 102, 241, 0.15)' },
-      aurora: { backgroundColor: 'rgba(45, 212, 191, 0.3)', borderColor: 'rgba(45, 212, 191, 0.5)', boxShadow: '0 0 30px rgba(45, 212, 191, 0.15)' },
-      plasma: { backgroundColor: 'rgba(168, 85, 247, 0.3)', borderColor: 'rgba(168, 85, 247, 0.5)', boxShadow: '0 0 30px rgba(168, 85, 247, 0.15)' },
-      solar: { backgroundColor: 'rgba(249, 115, 22, 0.3)', borderColor: 'rgba(249, 115, 22, 0.5)', boxShadow: '0 0 30px rgba(249, 115, 22, 0.15)' },
-      mars: { backgroundColor: 'rgba(244, 63, 94, 0.3)', borderColor: 'rgba(244, 63, 94, 0.5)', boxShadow: '0 0 30px rgba(244, 63, 94, 0.15)' },
-      ocean: { backgroundColor: 'rgba(14, 165, 233, 0.3)', borderColor: 'rgba(14, 165, 233, 0.5)', boxShadow: '0 0 30px rgba(14, 165, 233, 0.15)' },
-      terra: { backgroundColor: 'rgba(16, 185, 129, 0.3)', borderColor: 'rgba(16, 185, 129, 0.5)', boxShadow: '0 0 30px rgba(16, 185, 129, 0.15)' },
-      lunar: { backgroundColor: 'rgba(100, 116, 139, 0.3)', borderColor: 'rgba(100, 116, 139, 0.5)', boxShadow: '0 0 30px rgba(100, 116, 139, 0.15)' },
-      gold: { backgroundColor: 'rgba(234, 179, 8, 0.3)', borderColor: 'rgba(234, 179, 8, 0.5)', boxShadow: '0 0 30px rgba(234, 179, 8, 0.15)' },
-      love: { backgroundColor: 'rgba(236, 72, 153, 0.3)', borderColor: 'rgba(236, 72, 153, 0.5)', boxShadow: '0 0 30px rgba(236, 72, 153, 0.15)' },
-      void: { backgroundColor: 'rgba(0, 0, 0, 0.6)', borderColor: 'rgba(255, 255, 255, 0.2)', boxShadow: '0 0 30px rgba(255, 255, 255, 0.05)' },
+      nebula: { backgroundColor: 'rgba(167, 139, 250, 0.2)', borderColor: 'rgba(167, 139, 250, 0.4)', boxShadow: '0 0 30px rgba(167, 139, 250, 0.1)' }, // Lavender
+      aurora: { backgroundColor: 'rgba(52, 211, 153, 0.2)', borderColor: 'rgba(52, 211, 153, 0.4)', boxShadow: '0 0 30px rgba(52, 211, 153, 0.1)' }, // Sage
+      plasma: { backgroundColor: 'rgba(129, 140, 248, 0.2)', borderColor: 'rgba(129, 140, 248, 0.4)', boxShadow: '0 0 30px rgba(129, 140, 248, 0.1)' }, // Periwinkle
+      solar: { backgroundColor: 'rgba(251, 191, 36, 0.2)', borderColor: 'rgba(251, 191, 36, 0.4)', boxShadow: '0 0 30px rgba(251, 191, 36, 0.1)' }, // Warm Beige/Gold
+      mars: { backgroundColor: 'rgba(244, 114, 182, 0.2)', borderColor: 'rgba(244, 114, 182, 0.4)', boxShadow: '0 0 30px rgba(244, 114, 182, 0.1)' }, // Soft Pink
+      ocean: { backgroundColor: 'rgba(56, 189, 248, 0.2)', borderColor: 'rgba(56, 189, 248, 0.4)', boxShadow: '0 0 30px rgba(56, 189, 248, 0.1)' }, // Sky
+      terra: { backgroundColor: 'rgba(16, 185, 129, 0.2)', borderColor: 'rgba(16, 185, 129, 0.4)', boxShadow: '0 0 30px rgba(16, 185, 129, 0.1)' }, // Emerald
+      lunar: { backgroundColor: 'rgba(148, 163, 184, 0.2)', borderColor: 'rgba(148, 163, 184, 0.4)', boxShadow: '0 0 30px rgba(148, 163, 184, 0.1)' }, // Slate
+      gold: { backgroundColor: 'rgba(250, 204, 21, 0.2)', borderColor: 'rgba(250, 204, 21, 0.4)', boxShadow: '0 0 30px rgba(250, 204, 21, 0.1)' }, // Yellow
+      love: { backgroundColor: 'rgba(251, 113, 133, 0.2)', borderColor: 'rgba(251, 113, 133, 0.4)', boxShadow: '0 0 30px rgba(251, 113, 133, 0.1)' }, // Rose
+      void: { backgroundColor: 'rgba(15, 7, 32, 0.6)', borderColor: 'rgba(167, 139, 250, 0.2)', boxShadow: '0 0 30px rgba(167, 139, 250, 0.05)' }, // Deep Lavender
     };
     return styles[colorId] || styles.nebula;
   };
@@ -188,8 +188,8 @@ export function Journal({ onBack }: JournalProps) {
         {view === 'list' ? (
           <button
             onClick={handleNewEntry}
-            className="btn btn-link p-2 rounded-circle text-info hover-bg-info hover-text-white transition-all shadow-sm"
-            style={{ backgroundColor: 'rgba(45, 212, 191, 0.2)' }}
+            className="btn btn-link p-2 rounded-circle text-primary hover-bg-primary hover-text-white transition-all shadow-sm"
+            style={{ backgroundColor: 'rgba(167, 139, 250, 0.2)', color: '#a78bfa' }}
           >
             <Plus size={24} />
           </button>
@@ -197,7 +197,7 @@ export function Journal({ onBack }: JournalProps) {
           <button
             onClick={handleSaveEntry}
             className="btn btn-primary rounded-pill px-4 py-2 d-flex align-items-center gap-2 fw-bold text-uppercase small shadow-sm"
-            style={{ backgroundColor: 'rgba(99, 102, 241, 0.5)', borderColor: 'rgba(99, 102, 241, 0.5)' }}
+            style={{ backgroundColor: 'rgba(167, 139, 250, 0.5)', borderColor: 'rgba(167, 139, 250, 0.5)' }}
           >
             <Save size={18} />
             <span>Save</span>
