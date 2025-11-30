@@ -27,42 +27,42 @@ const TECHNIQUES: Record<string, Technique> = {
         name: '4-7-8 Breathing',
         description: 'Deep relaxation. Inhale 4s, Hold 7s, Exhale 8s.',
         pattern: [4000, 7000, 8000, 0],
-        color: 'from-nebula-500 to-plasma-500'
+        color: 'from-violet-400 to-indigo-400'
     },
     'focus': {
         id: 'focus',
         name: 'Box Breathing',
         description: 'Focus and clarity. Equal 4s phases.',
         pattern: [4000, 4000, 4000, 4000],
-        color: 'from-aurora-500 to-emerald-500'
+        color: 'from-purple-400 to-fuchsia-400'
     },
     'balance': {
         id: 'balance',
         name: 'Equal Breathing',
         description: 'Balance and calm. Inhale 4s, Exhale 4s.',
         pattern: [4000, 0, 4000, 0],
-        color: 'from-blue-500 to-cyan-500'
+        color: 'from-pink-400 to-purple-400'
     },
     'calm': {
         id: 'calm',
         name: 'Pursed Lip',
         description: 'Relieves shortness of breath.',
         pattern: [2000, 0, 4000, 0],
-        color: 'from-rose-500 to-pink-500'
+        color: 'from-rose-400 to-pink-400'
     },
     'energy': {
         id: 'energy',
         name: 'Lion\'s Breath',
         description: 'Energizing breath.',
         pattern: [3000, 0, 1000, 0],
-        color: 'from-orange-500 to-amber-500'
+        color: 'from-amber-400 to-orange-400'
     },
     'anxiety': {
         id: 'anxiety',
         name: 'Resonance',
         description: 'Reduces anxiety.',
         pattern: [5000, 0, 5000, 0],
-        color: 'from-violet-500 to-fuchsia-500'
+        color: 'from-violet-400 to-purple-400'
     }
 };
 
@@ -244,8 +244,8 @@ export function Breathing({ onBack, initialTechnique }: BreathingProps) {
     const getTechniqueStyle = (techId: string) => {
         const gradients: Record<string, string> = {
             relax: 'linear-gradient(135deg, rgba(167, 139, 250, 0.5), rgba(129, 140, 248, 0.5))', // Lavender/Periwinkle
-            focus: 'linear-gradient(135deg, rgba(52, 211, 153, 0.5), rgba(16, 185, 129, 0.5))', // Sage/Emerald
-            balance: 'linear-gradient(135deg, rgba(129, 140, 248, 0.5), rgba(56, 189, 248, 0.5))', // Periwinkle/Sky
+            focus: 'linear-gradient(135deg, rgba(192, 132, 252, 0.5), rgba(168, 85, 247, 0.5))', // Purple/Orchid
+            balance: 'linear-gradient(135deg, rgba(244, 114, 182, 0.5), rgba(192, 132, 252, 0.5))', // Pink/Purple
             calm: 'linear-gradient(135deg, rgba(244, 114, 182, 0.5), rgba(251, 113, 133, 0.5))', // Pink/Rose
             energy: 'linear-gradient(135deg, rgba(251, 191, 36, 0.5), rgba(245, 158, 11, 0.5))', // Gold/Amber
             anxiety: 'linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(167, 139, 250, 0.5))', // Violet/Lavender

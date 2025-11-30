@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { X, Wind } from 'lucide-react';
+import { X, Wind, CloudRain, Minus, Sun, Sparkles, Zap } from 'lucide-react';
 
 /**
  * Props for the MoodFeedback component.
@@ -18,51 +18,64 @@ interface MoodFeedbackProps {
 export function MoodFeedback({ mood, onClose, onStartBreathing }: MoodFeedbackProps) {
 
     /**
-     * Returns feedback data based on the mood emoji.
-     * @param m - The mood emoji.
+     * Returns feedback data based on the mood key.
+     * @param m - The mood key.
      */
     const getFeedback = (m: string) => {
         switch (m) {
-            case '😔': return {
+            case 'low': return {
                 title: "It's okay to feel low",
                 message: "Everyone has these days. Let's try a focus exercise to gently lift your energy.",
                 techniqueId: 'focus',
-                techniqueName: 'Box Breathing'
+                techniqueName: 'Box Breathing',
+                Icon: CloudRain,
+                color: 'text-secondary'
             };
-            case '😐': return {
+            case 'neutral': return {
                 title: "Feeling neutral?",
                 message: "That's a stable place to be. Let's maintain this balance.",
                 techniqueId: 'balance',
-                techniqueName: 'Equal Breathing'
+                techniqueName: 'Equal Breathing',
+                Icon: Minus,
+                color: 'text-info'
             };
-            case '🙂': return {
+            case 'good': return {
                 title: "Good to see you",
                 message: "Glad you're feeling okay. A quick breathing session can help ground you.",
                 techniqueId: 'relax',
-                techniqueName: '4-7-8 Breathing'
+                techniqueName: '4-7-8 Breathing',
+                Icon: Sun,
+                color: 'text-warning'
             };
-            case '😊': return {
+            case 'great': return {
                 title: "That's wonderful!",
                 message: "Happiness is great. Let's take a moment to savor this feeling.",
                 techniqueId: 'relax',
-                techniqueName: '4-7-8 Breathing'
+                techniqueName: '4-7-8 Breathing',
+                Icon: Sparkles,
+                color: 'text-primary'
             };
-            case '🤩': return {
+            case 'peak': return {
                 title: "You're glowing!",
                 message: "High energy is a gift! Let's channel it into something positive.",
                 techniqueId: 'balance',
-                techniqueName: 'Equal Breathing'
+                techniqueName: 'Equal Breathing',
+                Icon: Zap,
+                color: 'text-warning'
             };
             default: return {
                 title: "Checking in",
                 message: "Taking a moment to breathe is always a good idea.",
                 techniqueId: 'relax',
-                techniqueName: 'Relaxation'
+                techniqueName: 'Relaxation',
+                Icon: Wind,
+                color: 'text-primary'
             };
         }
     };
 
     const feedback = getFeedback(mood);
+    const Icon = feedback.Icon;
 
     return (
         <motion.div
@@ -85,7 +98,9 @@ export function MoodFeedback({ mood, onClose, onStartBreathing }: MoodFeedbackPr
                     <X size={20} />
                 </button>
 
-                <div className="display-1 mb-4" style={{ textShadow: '0 0 15px rgba(255,255,255,0.5)' }}>{mood}</div>
+                <div className={`display-1 mb-4 d-flex justify-content-center ${feedback.color}`} style={{ textShadow: '0 0 15px rgba(255,255,255,0.5)' }}>
+                    <Icon size={64} />
+                </div>
 
                 <h2 className="h4 fw-bold mb-3 text-uppercase tracking-widest" style={{ background: 'linear-gradient(to right, #a78bfa, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                     {feedback.title}

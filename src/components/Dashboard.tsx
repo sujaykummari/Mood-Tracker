@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { MoodFeedback } from './MoodFeedback';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, Settings as SettingsIcon, BookOpen, Wind } from 'lucide-react';
+import { LogOut, Settings as SettingsIcon, BookOpen, Wind, CloudRain, Minus, Sun, Sparkles, Zap } from 'lucide-react';
 
 // Import Plant Assets
-import plantAnxious from '../assets/plant_anxious_1764418244120.png';
 import plantLow from '../assets/plant_low_1764418262198.png';
 import plantNeutral from '../assets/plant_neutral_1764418276589.png';
 import plantCalm from '../assets/plant_calm_1764418294562.png';
@@ -39,11 +38,11 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     // Determine Plant Image based on Mood
     const getPlantImage = () => {
         switch (selectedMood) {
-            case '😔': return plantLow; // Low
-            case '😐': return plantNeutral; // Okay
-            case '🙂': return plantCalm; // Good
-            case '😊': return plantCalm; // Great (share calm state or make happy distinct)
-            case '🤩': return plantHappy; // Peak
+            case 'low': return plantLow; // Low
+            case 'neutral': return plantNeutral; // Okay
+            case 'good': return plantCalm; // Good
+            case 'great': return plantCalm; // Great (share calm state or make happy distinct)
+            case 'peak': return plantHappy; // Peak
             default: return plantNeutral; // Default/Neutral state
         }
     };
@@ -52,11 +51,11 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     const getPlantMessage = () => {
         if (!selectedMood) return "How are you feeling today?";
         switch (selectedMood) {
-            case '😔': return "It's okay to wilt sometimes. Rain helps us grow.";
-            case '😐': return "One day at a time. You're doing okay.";
-            case '🙂': return "Growing steady and strong.";
-            case '😊': return "Soaking up the sunshine!";
-            case '🤩': return "Blooming beautifully!";
+            case 'low': return "It's okay to wilt sometimes. Rain helps us grow.";
+            case 'neutral': return "One day at a time. You're doing okay.";
+            case 'good': return "Growing steady and strong.";
+            case 'great': return "Soaking up the sunshine!";
+            case 'peak': return "Blooming beautifully!";
             default: return "You're growing, even on hard days.";
         }
     };
@@ -133,21 +132,22 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                     <div className="gravity-panel p-3 rounded-4 w-100 border border-white bg-white bg-opacity-50">
                         <div className="d-flex justify-content-between align-items-center gap-1">
                             {[
-                                { emoji: '😔', label: 'Low' },
-                                { emoji: '😐', label: 'Okay' },
-                                { emoji: '🙂', label: 'Good' },
-                                { emoji: '😊', label: 'Great' },
-                                { emoji: '🤩', label: 'Peak' }
-                            ].map((item, index) => (
+                                { id: 'low', icon: CloudRain, label: 'Low', color: 'text-secondary' },
+                                { id: 'neutral', icon: Minus, label: 'Okay', color: 'text-info' },
+                                { id: 'good', icon: Sun, label: 'Good', color: 'text-warning' },
+                                { id: 'great', icon: Sparkles, label: 'Great', color: 'text-primary' },
+                                { id: 'peak', icon: Zap, label: 'Peak', color: 'text-warning' }
+                            ].map((item) => (
                                 <button
-                                    key={index}
-                                    onClick={() => handleMoodSelect(item.emoji)}
-                                    className={`btn border-0 d-flex flex-column align-items-center gap-2 transition-all duration-300 position-relative p-2 rounded-3 ${selectedMood === item.emoji ? 'bg-primary bg-opacity-10 translate-middle-y-1' : 'hover-bg-light-5'}`}
+                                    key={item.id}
+                                    onClick={() => handleMoodSelect(item.id)}
+                                    className={`btn border-0 d-flex flex-column align-items-center gap-2 transition-all duration-300 position-relative p-2 rounded-3 ${selectedMood === item.id ? 'bg-primary bg-opacity-10 translate-middle-y-1' : 'hover-bg-light-5'}`}
                                 >
-                                    <div className={`fs-2 transition-transform duration-300 ${selectedMood === item.emoji ? 'scale-110' : 'hover-scale-110'}`}>
-                                        {item.emoji}
+                                    <div className={`p-3 rounded-circle bg-light bg-opacity-50 transition-transform duration-300 ${selectedMood === item.id ? 'scale-110 shadow-sm' : 'hover-scale-110'}`}>
+                                        <item.icon size={24} className={item.color} />
                                     </div>
-                                    {selectedMood === item.emoji && (
+                                    <span className={`small fw-bold ${selectedMood === item.id ? 'text-primary' : 'text-secondary'}`}>{item.label}</span>
+                                    {selectedMood === item.id && (
                                         <motion.div
                                             layoutId="activeMoodIndicator"
                                             className="position-absolute bottom-0 w-1 h-1 rounded-circle shadow-sm"

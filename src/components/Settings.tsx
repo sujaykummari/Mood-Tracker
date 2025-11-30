@@ -149,7 +149,7 @@ export function Settings({ onBack }: SettingsProps) {
                 <button
                     onClick={handleSave}
                     className="btn w-100 gravity-button py-3 rounded-4 fw-bold text-light mt-4 d-flex align-items-center justify-content-center gap-2 text-uppercase small sticky-bottom shadow-lg backdrop-blur-xl"
-                    style={{ bottom: '1.5rem', backgroundColor: 'rgba(0,0,0,0.5)' }}
+                    style={{ bottom: '6rem', backgroundColor: 'rgba(0,0,0,0.5)' }}
                 >
                     {saved ? <Check size={18} className="text-info" style={{ color: '#2dd4bf' }} /> : null}
                     {saved ? 'Settings Saved' : 'Save Changes'}
