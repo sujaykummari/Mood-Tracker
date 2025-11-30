@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLanguage, LANGUAGES } from '../context/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, CheckCircle, Wind, Brain, ShieldCheck, Heart, Coffee, BookOpen, Volume2, VolumeX, ChevronRight, ChevronLeft, Globe } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Wind, Brain, ShieldCheck, Heart, Coffee, BookOpen, Volume2, VolumeX, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Breathing } from './Breathing';
 
 interface PanicButtonProps {
@@ -8,21 +9,12 @@ interface PanicButtonProps {
 }
 
 type PanicStep = 'initial' | 'calm_statements' | 'face_statements' | 'grounding_prompt' | 'breathing' | 'complete';
-type Language = 'en' | 'hi' | 'te' | 'kn' | 'ta' | 'ml';
-
-const LANGUAGES: { id: Language; label: string; voiceCode: string }[] = [
-    { id: 'en', label: 'English', voiceCode: 'en-IN' },
-    { id: 'hi', label: 'Hindi', voiceCode: 'hi-IN' },
-    { id: 'te', label: 'Telugu', voiceCode: 'te-IN' },
-    { id: 'kn', label: 'Kannada', voiceCode: 'kn-IN' },
-    { id: 'ta', label: 'Tamil', voiceCode: 'ta-IN' },
-    { id: 'ml', label: 'Malayalam', voiceCode: 'ml-IN' },
-];
+// Language type is now imported from context
 
 export function PanicButton({ onBack }: PanicButtonProps) {
     const [step, setStep] = useState<PanicStep>('initial');
     const [statementIndex, setStatementIndex] = useState(0);
-    const [language, setLanguage] = useState<Language>('en');
+    const { language } = useLanguage(); // Use global language
     const [isPlaying, setIsPlaying] = useState(false);
     const synthRef = useRef<SpeechSynthesis | null>(null);
 
@@ -161,24 +153,8 @@ export function PanicButton({ onBack }: PanicButtonProps) {
                     <h1 className="h5 ms-3 mb-0 text-uppercase tracking-widest fw-bold text-secondary opacity-75">Panic Support</h1>
                 </div>
 
-                {/* Language Selector */}
-                <div className="dropdown">
-                    <button
-                        className="btn btn-sm gravity-button d-flex align-items-center gap-2 text-secondary"
-                        type="button"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                        onClick={(e) => {
-                            // Simple toggle for demo if bootstrap js isn't fully loaded, 
-                            // but ideally use a custom dropdown or standard select
-                            const nextIndex = (LANGUAGES.findIndex(l => l.id === language) + 1) % LANGUAGES.length;
-                            setLanguage(LANGUAGES[nextIndex].id);
-                        }}
-                    >
-                        <Globe size={16} />
-                        <span className="text-uppercase">{language}</span>
-                    </button>
-                </div>
+                {/* Language Selector is now global in App.tsx, removing local one to avoid duplication or keeping it if design requires, but plan said global. */}
+                {/* We will remove the local selector here as the global one is overlaying. */}
             </div>
 
             {/* Content */}

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { MoodFeedback } from './MoodFeedback';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, Settings as SettingsIcon, BookOpen, Wind, CloudRain, Minus, Sun, Sparkles, Zap } from 'lucide-react';
+import { LogOut, Settings as SettingsIcon, BookOpen, Wind, CloudRain, Minus, Sun, Sparkles, Zap, ChevronRight, Gamepad2 } from 'lucide-react';
 
 // Import Plant Assets
 import plantLow from '../assets/plant_low_1764418262198.png';
@@ -11,7 +11,7 @@ import plantCalm from '../assets/plant_calm_1764418294562.png';
 import plantHappy from '../assets/plant_happy_1764418309016.png';
 
 interface DashboardProps {
-    onNavigate: (view: 'journal' | 'breathing' | 'panic' | 'settings', params?: any) => void;
+    onNavigate: (view: 'journal' | 'breathing' | 'panic' | 'settings' | 'affirmations' | 'games', params?: any) => void;
 }
 
 export function Dashboard({ onNavigate }: DashboardProps) {
@@ -189,6 +189,50 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                                 <Wind size={24} />
                             </div>
                             <span className="fw-bold text-secondary hover-text-primary tracking-wide text-uppercase small">Breathe</span>
+                        </motion.button>
+                    </div>
+
+                    <div className="col-12">
+                        <motion.button
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.4 }}
+                            onClick={() => onNavigate('games')}
+                            className="btn border-0 w-100 gravity-panel p-4 rounded-4 d-flex align-items-center justify-content-between gap-3 hover-bg-light-10 transition-all duration-300 active-scale-95 border border-white bg-white mb-3"
+                        >
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="p-3 rounded-circle bg-opacity-10 hover-text-white hover-scale-110 transition-all duration-300 shadow-sm" style={{ backgroundColor: 'rgba(167, 243, 208, 0.2)', color: '#34D399' }}>
+                                    <Gamepad2 size={24} />
+                                </div>
+                                <div className="text-start">
+                                    <span className="d-block fw-bold text-secondary hover-text-primary tracking-wide text-uppercase small">Calming Games</span>
+                                    <span className="small text-secondary opacity-75">Play & Relax</span>
+                                </div>
+                            </div>
+                            <div className="text-secondary opacity-50">
+                                <ChevronRight size={20} />
+                            </div>
+                        </motion.button>
+
+                        <motion.button
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                            onClick={() => onNavigate('affirmations')}
+                            className="btn border-0 w-100 gravity-panel p-4 rounded-4 d-flex align-items-center justify-content-between gap-3 hover-bg-light-10 transition-all duration-300 active-scale-95 border border-white bg-white"
+                        >
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="p-3 rounded-circle bg-opacity-10 hover-text-white hover-scale-110 transition-all duration-300 shadow-sm" style={{ backgroundColor: 'rgba(255, 183, 178, 0.2)', color: '#FFB7B2' }}>
+                                    <Sparkles size={24} />
+                                </div>
+                                <div className="text-start">
+                                    <span className="d-block fw-bold text-secondary hover-text-primary tracking-wide text-uppercase small">Daily Affirmations</span>
+                                    <span className="small text-secondary opacity-75">Find your calm</span>
+                                </div>
+                            </div>
+                            <div className="text-secondary opacity-50">
+                                <ChevronRight size={20} />
+                            </div>
                         </motion.button>
                     </div>
                 </div>

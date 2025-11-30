@@ -7,12 +7,14 @@ import { Journal } from './components/Journal';
 import { Breathing } from './components/Breathing';
 import { PanicButton } from './components/PanicButton';
 import { NavBar } from './components/NavBar';
+import { Affirmations } from './components/Affirmations';
+import { GamesHub } from './components/games/GamesHub';
 import { AnimatePresence } from 'framer-motion';
 
 /**
  * Type definition for the available views in the application sujay.
  */
-type View = 'dashboard' | 'journal' | 'breathing' | 'panic' | 'settings';
+type View = 'dashboard' | 'journal' | 'breathing' | 'panic' | 'settings' | 'affirmations' | 'games';
 
 /**
  * Main application content component.
@@ -72,6 +74,16 @@ function AppContent() {
                         onBack={() => setCurrentView('dashboard')}
                     />
                 )}
+                {currentView === 'affirmations' && (
+                    <Affirmations
+                        onBack={() => setCurrentView('dashboard')}
+                    />
+                )}
+                {currentView === 'games' && (
+                    <GamesHub
+                        onBack={() => setCurrentView('dashboard')}
+                    />
+                )}
             </AnimatePresence>
 
             <NavBar currentView={currentView} onNavigate={handleNavigate} />
@@ -79,14 +91,56 @@ function AppContent() {
     );
 }
 
+import { Globe } from 'lucide-react';
+import { LanguageProvider, useLanguage, LANGUAGES } from './context/LanguageContext';
+
+function LanguageSelector() {
+    const { language, setLanguage } = useLanguage();
+
+    return (
+        <div className="position-fixed top-0 end-0 p-3 z-50">
+            <div className="dropdown">
+                <button
+                    className="btn gravity-button d-flex align-items-center gap-2 text-secondary shadow-sm backdrop-blur-md bg-white bg-opacity-50"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                >
+                    <Globe size={18} />
+                    <span className="text-uppercase small fw-bold">{language}</span>
+                </button>
+                <ul className="dropdown-menu dropdown-menu-end border-0 shadow-lg rounded-4 overflow-hidden p-2">
+                    {LANGUAGES.map((lang) => (
+                        <li key={lang.id}>
+                            <button
+                                className={`dropdown-item rounded-3 small fw-bold ${language === lang.id ? 'bg-primary bg-opacity-10 text-primary' : 'text-secondary'}`}
+                                onClick={() => setLanguage(lang.id)}
+                            >
+                                {lang.label}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    );
+}
+
+import { GamificationProvider } from './context/GamificationContext';
+
 /**
  * Root App component.
- * Wraps the application content with the AuthProvider to manage user sessions.
+ * Wraps the application content with the AuthProvider and LanguageProvider.
  */
 function App() {
     return (
         <AuthProvider>
-            <AppContent />
+            <GamificationProvider>
+                <LanguageProvider>
+                    <LanguageSelector />
+                    <AppContent />
+                </LanguageProvider>
+            </GamificationProvider>
         </AuthProvider>
     );
 }
